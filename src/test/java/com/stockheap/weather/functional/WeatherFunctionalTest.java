@@ -1,7 +1,11 @@
 package com.stockheap.weather.functional;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.stockheap.weather.WeatherApplication;
 import com.stockheap.weather.service.external_weather.dto.WeatherDataAndResponseStatusDTO;
+import com.stockheap.weather.service.external_weather.open_weather.response_data.OpenExtendedWeatherResponse;
+import com.stockheap.weather.service.external_weather.open_weather.response_data.Sys;
 import com.stockheap.weather.service.weather.WeatherMethods;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,9 +23,8 @@ public class WeatherFunctionalTest {
     {
         String zip = "94121";
         String country = "us";
-        Mono<WeatherDataAndResponseStatusDTO> weatherDataAndResponseStatusDTOMono  =  weatherMethods.getCurrentWeather(zip, country);
+        Mono<WeatherDataAndResponseStatusDTO> weatherDataAndResponseStatusDTOMono  =  weatherMethods.getExtendedWeather(zip, country);
         weatherDataAndResponseStatusDTOMono.subscribe(s->{
-
 
             String a1 = "";
 

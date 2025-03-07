@@ -6,10 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.stockheap.weather.data.common.dto.WeatherData;
 import com.stockheap.weather.service.external_weather.common.ExternalWeatherMethods;
 import com.stockheap.weather.service.external_weather.dto.WeatherDataAndResponseStatusDTO;
-import com.stockheap.weather.service.external_weather.open_weather.response_data.Main;
-import com.stockheap.weather.service.external_weather.open_weather.response_data.OpenExtendedWeatherResponse;
-import com.stockheap.weather.service.external_weather.open_weather.response_data.OpenWeatherResponse;
-import com.stockheap.weather.service.external_weather.open_weather.response_data.Sys;
+import com.stockheap.weather.service.external_weather.open_weather.response_data.*;
 import com.stockheap.weather.util.DateUtil;
 import io.netty.channel.ChannelOption;
 import io.netty.handler.timeout.ReadTimeoutHandler;
@@ -19,6 +16,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.UriComponentsBuilder;
 import reactor.core.publisher.Mono;
@@ -27,6 +26,10 @@ import reactor.netty.http.client.HttpClient;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -65,30 +68,47 @@ public class OpenWeatherMethodsImpl implements ExternalWeatherMethods {
         MAPPER.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
-    private String generateUrl(String zip, String country, String url) {
+    private MultiValueMap<String, String> generateParams(String zip, String country) {
 
         String zipCodeEncoded = URLEncoder.encode(zip, StandardCharsets.UTF_8);
         String encodedCountry = URLEncoder.encode(country, StandardCharsets.UTF_8);
 
-        return UriComponentsBuilder.fromHttpUrl(url)
-                .queryParam(ZIP, zipCodeEncoded + "," + encodedCountry)
-                .queryParam(LIMIT, LIMIT_VALUE.toString())
-                .queryParam(APP_ID, openWeatherApiKey)
-                .queryParam(UNITS, IMPERIAL)
-                .toUriString();
+
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        List<String> zipValues = new ArrayList<>();
+        zipValues.add(zipCodeEncoded + "," + encodedCountry);
+        params.put(ZIP, zipValues);
+
+        List<String> limitValues = new ArrayList<>();
+        limitValues.add(LIMIT_VALUE.toString());
+        params.put(LIMIT, limitValues);
+
+        List<String> apiKeyValues = new ArrayList<>();
+        apiKeyValues.add(openWeatherApiKey);
+        params.put(APP_ID, apiKeyValues);
+
+        List<String> unitsValues = new ArrayList<>();
+        unitsValues.add(IMPERIAL);
+        params.put(UNITS, unitsValues);
+        return params;
     }
 
     public Mono<WeatherDataAndResponseStatusDTO> getCurrentWeather(String zip, String country) {
 
-        final String updatedUrl = generateUrl(zip, country, openWeatherCurrentWeatherUrl);
-        System.out.println(updatedUrl);
+        MultiValueMap<String, String> params = generateParams(zip, country);
         WebClient webClient = create();
         return webClient.get()
-                .uri(uriBuilder -> uriBuilder.path(updatedUrl)
+                .uri(uriBuilder -> uriBuilder.path(openWeatherCurrentWeatherUrl).queryParams(params)
                         .build()).exchangeToMono(clientResponse -> {
                     HttpStatusCode httpStatusCode = clientResponse.statusCode(); // Get response status
                     if (httpStatusCode.is2xxSuccessful()) {
-                        return clientResponse.bodyToMono(OpenWeatherResponse.class);
+                        return clientResponse.bodyToMono(String.class).map(jsonString -> {
+                            try {
+                                return MAPPER.readValue(jsonString, OpenWeatherResponse.class);
+                            } catch (Exception e) {
+                                return new OpenWeatherResponse(false, HttpStatusCode.valueOf(666));
+                            }
+                        });
                     } else {
                         return Mono.just(new OpenWeatherResponse(false, httpStatusCode));
                     }
@@ -100,18 +120,27 @@ public class OpenWeatherMethodsImpl implements ExternalWeatherMethods {
 
     public Mono<WeatherDataAndResponseStatusDTO> getExtendedWeather(String zip, String country) {
 
-        String updatedUrl = generateUrl(zip, country, openWeatherExtendedWeatherUrl);
+        MultiValueMap<String, String> params = generateParams(zip, country);
         WebClient webClient = create();
         return webClient.get()
-                .uri(uriBuilder -> uriBuilder.path(updatedUrl)
+                .uri(uriBuilder -> uriBuilder.path(openWeatherExtendedWeatherUrl).queryParams(params)
                         .build()).exchangeToMono(clientResponse -> {
                     HttpStatusCode httpStatusCode = clientResponse.statusCode(); // Get response status
                     if (httpStatusCode.is2xxSuccessful()) {
-                        return clientResponse.bodyToMono(OpenExtendedWeatherResponse.class);
+                        return clientResponse.bodyToMono(String.class)
+                                .map(jsonString -> {
+                                    try {
+                                        String a1 ="";
+                                        return MAPPER.readValue(jsonString, OpenExtendedWeatherResponse.class);
+                                    } catch (Exception e) {
+                                        return new OpenExtendedWeatherResponse(false, HttpStatusCode.valueOf(666));
+                                    }
+                                });
                     } else {
                         return Mono.just(new OpenExtendedWeatherResponse(false, httpStatusCode));
                     }
                 }).flatMap(openExtendedWeatherResponse -> {
+                    String a1 = "";
                     return Mono.just(createWeatherDataAndResponseStatusDTO(zip, country, IMPERIAL, openExtendedWeatherResponse));
                 });
     }
@@ -127,16 +156,24 @@ public class OpenWeatherMethodsImpl implements ExternalWeatherMethods {
         weatherDataAndResponseStatusDTO.setZip(zip);
         weatherDataAndResponseStatusDTO.setZip(country);
 
+        long timeZone = 0;
+        if(openExtendedWeatherResponse != null &&
+                openExtendedWeatherResponse.getCity() != null)
+        {
+            timeZone = openExtendedWeatherResponse.getCity().getTimezone();
+        }
+
+
         if (openExtendedWeatherResponse.isValid() && openExtendedWeatherResponse.getCod() == 200) {
 
             if (openExtendedWeatherResponse.getList() != null &&
                     openExtendedWeatherResponse.getList().size() > 0) {
 
-                for (OpenWeatherResponse openWeatherResponse : openExtendedWeatherResponse.getList()) {
+                for (MainAndDateTime openWeatherResponse : openExtendedWeatherResponse.getList()) {
                     if (openWeatherResponse != null &&
                             openWeatherResponse.getMain() != null) {
                         WeatherData weatherData = createWeatherData(openWeatherResponse.getMain(),
-                                IMPERIAL, openWeatherResponse.getDt(), openWeatherResponse.getTimezone());
+                                IMPERIAL, openWeatherResponse.getDt(),timeZone);
                         if (weatherData != null) {
                             weatherDataAndResponseStatusDTO.addWeatherData(weatherData);
                         }

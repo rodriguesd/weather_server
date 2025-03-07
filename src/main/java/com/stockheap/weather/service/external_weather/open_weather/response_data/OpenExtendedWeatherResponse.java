@@ -12,7 +12,7 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class OpenExtendedWeatherResponse implements Serializable {
 
-    private List<OpenWeatherResponse> list = new ArrayList<>();
+    private List<MainAndDateTime> list = new ArrayList<>();
     private long cod;
     private City city;
 
@@ -42,7 +42,7 @@ public class OpenExtendedWeatherResponse implements Serializable {
         return httpStatusCode;
     }
 
-    public List<OpenWeatherResponse> getList() {
+    public List<MainAndDateTime> getList() {
         if (list == null) {
             list = new ArrayList<>();
         }
@@ -50,7 +50,7 @@ public class OpenExtendedWeatherResponse implements Serializable {
     }
 
     @JsonSetter("list")
-    public void setList(List<OpenWeatherResponse> list) {
+    public void setList(List<MainAndDateTime> list) {
         this.list = list;
     }
 

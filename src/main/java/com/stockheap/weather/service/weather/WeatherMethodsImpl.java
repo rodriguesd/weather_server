@@ -30,9 +30,6 @@ public class WeatherMethodsImpl implements WeatherMethods {
 
     public Mono<WeatherDataAndResponseStatusDTO> getCurrentWeather(String zip, String country) {
 
-
-        System.out.println("@@@@ "+ externalWeatherMethods );
-
         WeatherData weatherData = (WeatherData) cacheManager.getCache(WeatherConstants.CacheNames.WEATHER_FORECAST_CACHE).get(CACHE_ZIP_PREFIX_CURRENT + zip);
         if (weatherData != null) {
             WeatherDataAndResponseStatusDTO weatherDataAndResponseStatusDTO = new WeatherDataAndResponseStatusDTO();
