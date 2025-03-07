@@ -21,7 +21,7 @@ public class WeatherFunctionalTest {
     @Test
     public void testCurrentWeather() throws Exception
     {
-        String zip = "94121";
+        String zip = "94501";
         String country = "us";
         Mono<WeatherDataAndResponseStatusDTO> weatherDataAndResponseStatusDTOMono  =  weatherMethods.getExtendedWeather(zip, country);
         weatherDataAndResponseStatusDTOMono.subscribe(s->{

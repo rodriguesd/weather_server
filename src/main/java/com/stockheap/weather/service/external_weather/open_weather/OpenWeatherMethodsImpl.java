@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.util.UriComponentsBuilder;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.client.HttpClient;
 
@@ -27,9 +26,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -119,7 +116,6 @@ public class OpenWeatherMethodsImpl implements ExternalWeatherMethods {
 
 
     public Mono<WeatherDataAndResponseStatusDTO> getExtendedWeather(String zip, String country) {
-
         MultiValueMap<String, String> params = generateParams(zip, country);
         WebClient webClient = create();
         return webClient.get()
