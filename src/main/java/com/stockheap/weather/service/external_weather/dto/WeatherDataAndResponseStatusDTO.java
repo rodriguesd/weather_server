@@ -14,7 +14,7 @@ public class WeatherDataAndResponseStatusDTO implements Serializable {
     private String zip;
     private String countryCode;
     private WeatherData current;
-    private long statusCode = 0;
+    private Integer statusCode = 0;
     private boolean fromCache = true;
 
     public WeatherDataAndResponseStatusDTO()
@@ -22,23 +22,17 @@ public class WeatherDataAndResponseStatusDTO implements Serializable {
         super();
     }
 
-    public WeatherDataAndResponseStatusDTO( long statusCode)
+    public WeatherDataAndResponseStatusDTO( Integer statusCode)
     {
 
         this.statusCode = statusCode;
     }
 
-    public void setFromCache(boolean fromCache) {
-        this.fromCache = fromCache;
-    }
 
     public boolean ok() {
         return statusCode == 200;
     }
 
-    public void setStatusCode(long statusCode) {
-        this.statusCode = statusCode;
-    }
 
     public void addWeatherData(WeatherData data) {
         if (data != null) {
@@ -59,40 +53,4 @@ public class WeatherDataAndResponseStatusDTO implements Serializable {
         }
     }
 
-    public List<WeatherData> getExtended() {
-        return extended;
-    }
-
-    public void setExtended(List<WeatherData> extended) {
-        this.extended = extended;
-    }
-
-    public String getZip() {
-        return zip;
-    }
-
-    public void setZip(String zip) {
-        this.zip = zip;
-    }
-
-    public String getCountryCode() {
-        return countryCode;
-    }
-
-    public void setCountryCode(String countryCode) {
-        this.countryCode = countryCode;
-    }
-
-
-    public WeatherData getCurrent() {
-        return current;
-    }
-
-    public void setCurrent(WeatherData current) {
-        this.current = current;
-    }
-
-    public Long getStatusCode() {
-        return statusCode;
-    }
 }

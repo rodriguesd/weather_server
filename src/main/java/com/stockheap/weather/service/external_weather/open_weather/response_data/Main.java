@@ -1,7 +1,9 @@
 package com.stockheap.weather.service.external_weather.open_weather.response_data;
 
 import com.fasterxml.jackson.annotation.JsonSetter;
+import lombok.Getter;
 
+@Getter
 public class Main {
     private float temp;
 
@@ -19,72 +21,51 @@ public class Main {
 
     private int grndLevel;
 
-    public float getTemp() {
-        return temp;
-    }
 
     @JsonSetter("temp")
     public void setTemp(float temp) {
         this.temp = temp;
     }
 
-    public double getFeelsLike() {
-        return feelsLike;
-    }
+
 
     @JsonSetter("feels_like")
     public void setFeelsLike(float feelsLike) {
         this.feelsLike = feelsLike;
     }
 
-    public float getTempMin() {
-        return tempMin;
-    }
+
 
     @JsonSetter("temp_min")
     public void setTempMin(float tempMin) {
         this.tempMin = tempMin;
     }
 
-    public float getTempMax() {
-        return tempMax;
-    }
 
     @JsonSetter("temp_max")
     public void setTempMax(float tempMax) {
         this.tempMax = tempMax;
     }
 
-    public int getPressure() {
-        return pressure;
-    }
 
     @JsonSetter("pressure")
     public void setPressure(int pressure) {
         this.pressure = pressure;
     }
 
-    public int getHumidity() {
-        return humidity;
-    }
 
     @JsonSetter("humidity")
     public void setHumidity(int humidity) {
         this.humidity = humidity;
     }
 
-    public int getSeaLevel() {
-        return seaLevel;
-    }
+
 
     @JsonSetter("sea_level")
     public void setSeaLevel(int seaLevel) {
         this.seaLevel = seaLevel;
     }
 
-    public int getGrndLevel() {
-        return grndLevel;
-    }
 
     @JsonSetter("grnd_level")
     public void setGrndLevel(int grndLevel) {

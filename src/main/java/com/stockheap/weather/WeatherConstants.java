@@ -120,7 +120,8 @@ public class WeatherConstants {
                 Map.entry("IE", "Ireland"),
                 Map.entry("IM", "Isle Of Man"),
                 Map.entry("IL", "Israel"),
-                Map.entry("IT", "Italy")
+                Map.entry("IT", "Italy"),
+                Map.entry("US", "United States")
 
         );
 
@@ -128,7 +129,7 @@ public class WeatherConstants {
         {
             if(code != null)
             {
-                return COUNTRY_MAP.containsKey(code.toUpperCase());
+                return COUNTRY_MAP.containsKey(code.trim().toUpperCase());
             }
             return false;
         }
