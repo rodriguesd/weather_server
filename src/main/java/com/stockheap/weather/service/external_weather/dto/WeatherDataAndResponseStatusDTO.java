@@ -15,6 +15,7 @@ public class WeatherDataAndResponseStatusDTO implements Serializable {
     private String countryCode;
     private WeatherData current;
     private long statusCode = 0;
+    private boolean fromCache = true;
 
     public WeatherDataAndResponseStatusDTO()
     {
@@ -25,6 +26,10 @@ public class WeatherDataAndResponseStatusDTO implements Serializable {
     {
 
         this.statusCode = statusCode;
+    }
+
+    public void setFromCache(boolean fromCache) {
+        this.fromCache = fromCache;
     }
 
     public boolean ok() {

@@ -189,6 +189,7 @@ public class OpenWeatherMethodsImpl implements ExternalWeatherMethods {
             {
                 weatherDataAndResponseStatusDTO.setStatusCode(HttpStatus.FORBIDDEN.value());
             }
+            weatherDataAndResponseStatusDTO.setFromCache(false);
         }
 
         return weatherDataAndResponseStatusDTO;
@@ -233,6 +234,7 @@ public class OpenWeatherMethodsImpl implements ExternalWeatherMethods {
             {
                 weatherDataAndResponseStatusDTO.setStatusCode(HttpStatus.FORBIDDEN.value());
             }
+            weatherDataAndResponseStatusDTO.setFromCache(false);
         }
 
         return weatherDataAndResponseStatusDTO;
