@@ -3,6 +3,7 @@ package com.stockheap.weather.service.external_weather.open_weather;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.stockheap.weather.WeatherConstants;
 import com.stockheap.weather.data.common.dto.WeatherData;
 import com.stockheap.weather.service.external_weather.common.ExternalWeatherMethods;
 import com.stockheap.weather.service.external_weather.dto.WeatherDataAndResponseStatusDTO;
@@ -13,6 +14,7 @@ import io.netty.handler.timeout.ReadTimeoutHandler;
 import io.netty.handler.timeout.WriteTimeoutHandler;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Service;
@@ -103,11 +105,11 @@ public class OpenWeatherMethodsImpl implements ExternalWeatherMethods {
                             try {
                                 return MAPPER.readValue(jsonString, OpenWeatherResponse.class);
                             } catch (Exception e) {
-                                return new OpenWeatherResponse(false, HttpStatusCode.valueOf(666));
+                                return new OpenWeatherResponse(false, WeatherConstants.ErrorCodes.INVALID_DATA_CURRENT);
                             }
                         });
                     } else {
-                        return Mono.just(new OpenWeatherResponse(false, httpStatusCode));
+                        return Mono.just(new OpenWeatherResponse(false, httpStatusCode.value()));
                     }
                 }).flatMap(openWeatherResponse -> {
                     return Mono.just(createWeatherDataAndResponseStatusDTO(zip, country, IMPERIAL, openWeatherResponse));
@@ -128,7 +130,7 @@ public class OpenWeatherMethodsImpl implements ExternalWeatherMethods {
                                     try {
                                         return MAPPER.readValue(jsonString, OpenExtendedWeatherResponse.class);
                                     } catch (Exception e) {
-                                        return new OpenExtendedWeatherResponse(false, 666);
+                                        return new OpenExtendedWeatherResponse(false, WeatherConstants.ErrorCodes.INVALID_DATA_EXTENDED);
                                     }
                                 });
                     } else {
@@ -159,7 +161,7 @@ public class OpenWeatherMethodsImpl implements ExternalWeatherMethods {
 
         if (openExtendedWeatherResponse != null &&
                 openExtendedWeatherResponse.isValid() &&
-                openExtendedWeatherResponse.getCod() == 200) {
+                openExtendedWeatherResponse.getCod() == HttpStatus.OK.value()) {
 
             if (openExtendedWeatherResponse.getList() != null &&
                     openExtendedWeatherResponse.getList().size() > 0) {
@@ -207,7 +209,7 @@ public class OpenWeatherMethodsImpl implements ExternalWeatherMethods {
         WeatherDataAndResponseStatusDTO weatherDataAndResponseStatusDTO = new WeatherDataAndResponseStatusDTO();
         weatherDataAndResponseStatusDTO.setZip(zip);
         weatherDataAndResponseStatusDTO.setZip(country);
-        if (openWeatherResponse.isValid() && openWeatherResponse.getCod() == 200) {
+        if (openWeatherResponse.isValid() && openWeatherResponse.getCod() == HttpStatus.OK.value()) {
 
             if (openWeatherResponse.getMain() != null) {
                 WeatherData weatherData = createWeatherData(openWeatherResponse.getMain(),

@@ -3,7 +3,7 @@ package com.stockheap.weather.service.external_weather.open_weather.response_dat
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonSetter;
-import org.springframework.http.HttpStatusCode;
+import org.springframework.http.HttpStatus;
 
 import java.util.List;
 
@@ -24,16 +24,16 @@ public class OpenWeatherResponse {
     private Sys sys;
 
     private boolean isValid = true;
-    private HttpStatusCode httpStatusCode = HttpStatusCode.valueOf(200);
+    private long statusCode = HttpStatus.OK.value();
 
     public OpenWeatherResponse() {
         super();
 
     }
 
-    public OpenWeatherResponse(boolean isValid, HttpStatusCode httpStatusCode) {
+    public OpenWeatherResponse(boolean isValid, long statusCode) {
         this.isValid = isValid;
-        this.httpStatusCode = httpStatusCode;
+        this.statusCode = statusCode;
 
     }
 
@@ -43,8 +43,8 @@ public class OpenWeatherResponse {
     }
 
     @JsonIgnore
-    public HttpStatusCode getHttpStatusCode() {
-        return httpStatusCode;
+    public long getStatusCode() {
+        return statusCode;
     }
 
     public long getDt() {

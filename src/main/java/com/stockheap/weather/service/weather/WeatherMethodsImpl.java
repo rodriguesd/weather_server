@@ -6,6 +6,7 @@ import com.stockheap.weather.service.external_weather.dto.WeatherDataAndResponse
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
@@ -24,7 +25,7 @@ public class WeatherMethodsImpl implements WeatherMethods {
                 .flatMap(mono -> mono)
                  .filter(value -> value != null &&
                         value.getCurrent() != null &&
-                        value.getStatusCode() == 200)
+                        value.getStatusCode() == HttpStatus.OK.value())
                 .cache();
 
 
@@ -36,7 +37,7 @@ public class WeatherMethodsImpl implements WeatherMethods {
                 .filter(value -> value != null &&
                         value.getExtended() != null &&
                         value.getExtended().size() > 0 &&
-                        value.getStatusCode() == 200)
+                        value.getStatusCode() == HttpStatus.OK.value())
                 .cache();
     }
 
