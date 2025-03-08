@@ -23,7 +23,7 @@ public class WeatherFunctionalTest {
     {
         String zip = "94501";
         String country = "us";
-        Mono<WeatherDataAndResponseStatusDTO> weatherDataAndResponseStatusDTOMono  =  weatherMethods.getExtendedWeather(zip, country);
+        Mono<WeatherDataAndResponseStatusDTO> weatherDataAndResponseStatusDTOMono  =  weatherMethods.getCurrentWeather(zip, country);
         weatherDataAndResponseStatusDTOMono.subscribe(s->{
 
             String a1 = "";

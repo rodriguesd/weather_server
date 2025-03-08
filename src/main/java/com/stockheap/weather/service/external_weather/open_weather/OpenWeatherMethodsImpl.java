@@ -126,17 +126,15 @@ public class OpenWeatherMethodsImpl implements ExternalWeatherMethods {
                         return clientResponse.bodyToMono(String.class)
                                 .map(jsonString -> {
                                     try {
-                                        String a1 ="";
                                         return MAPPER.readValue(jsonString, OpenExtendedWeatherResponse.class);
                                     } catch (Exception e) {
-                                        return new OpenExtendedWeatherResponse(false, HttpStatusCode.valueOf(666));
+                                        return new OpenExtendedWeatherResponse(false, 666);
                                     }
                                 });
                     } else {
-                        return Mono.just(new OpenExtendedWeatherResponse(false, httpStatusCode));
+                        return Mono.just(new OpenExtendedWeatherResponse(false, httpStatusCode.value()));
                     }
                 }).flatMap(openExtendedWeatherResponse -> {
-                    String a1 = "";
                     return Mono.just(createWeatherDataAndResponseStatusDTO(zip, country, IMPERIAL, openExtendedWeatherResponse));
                 });
     }
@@ -153,14 +151,15 @@ public class OpenWeatherMethodsImpl implements ExternalWeatherMethods {
         weatherDataAndResponseStatusDTO.setZip(country);
 
         long timeZone = 0;
-        if(openExtendedWeatherResponse != null &&
-                openExtendedWeatherResponse.getCity() != null)
-        {
+        if (openExtendedWeatherResponse != null &&
+                openExtendedWeatherResponse.getCity() != null) {
             timeZone = openExtendedWeatherResponse.getCity().getTimezone();
         }
 
 
-        if (openExtendedWeatherResponse.isValid() && openExtendedWeatherResponse.getCod() == 200) {
+        if (openExtendedWeatherResponse != null &&
+                openExtendedWeatherResponse.isValid() &&
+                openExtendedWeatherResponse.getCod() == 200) {
 
             if (openExtendedWeatherResponse.getList() != null &&
                     openExtendedWeatherResponse.getList().size() > 0) {
@@ -169,17 +168,19 @@ public class OpenWeatherMethodsImpl implements ExternalWeatherMethods {
                     if (openWeatherResponse != null &&
                             openWeatherResponse.getMain() != null) {
                         WeatherData weatherData = createWeatherData(openWeatherResponse.getMain(),
-                                IMPERIAL, openWeatherResponse.getDt(),timeZone);
+                                units, openWeatherResponse.getDt(), timeZone);
                         if (weatherData != null) {
                             weatherDataAndResponseStatusDTO.addWeatherData(weatherData);
                         }
                     }
                 }
             }
-
         }
 
-        weatherDataAndResponseStatusDTO.setHttpStatusCode(openExtendedWeatherResponse.getHttpStatusCode());
+        if (openExtendedWeatherResponse != null) {
+            weatherDataAndResponseStatusDTO.setStatusCode(openExtendedWeatherResponse.getCod());
+        }
+
         return weatherDataAndResponseStatusDTO;
 
     }
@@ -210,13 +211,16 @@ public class OpenWeatherMethodsImpl implements ExternalWeatherMethods {
 
             if (openWeatherResponse.getMain() != null) {
                 WeatherData weatherData = createWeatherData(openWeatherResponse.getMain(),
-                        IMPERIAL, openWeatherResponse.getDt(), openWeatherResponse.getTimezone());
+                        units, openWeatherResponse.getDt(), openWeatherResponse.getTimezone());
                 if (weatherData != null) {
                     weatherDataAndResponseStatusDTO.setCurrent(weatherData);
                 }
             }
         }
-        weatherDataAndResponseStatusDTO.setHttpStatusCode(openWeatherResponse.getHttpStatusCode());
+        if (openWeatherResponse != null) {
+            weatherDataAndResponseStatusDTO.setStatusCode(openWeatherResponse.getCod());
+        }
+
         return weatherDataAndResponseStatusDTO;
     }
 

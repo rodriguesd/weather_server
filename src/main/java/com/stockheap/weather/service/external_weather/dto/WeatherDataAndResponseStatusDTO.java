@@ -2,7 +2,7 @@ package com.stockheap.weather.service.external_weather.dto;
 
 import com.stockheap.weather.data.common.dto.WeatherData;
 import lombok.Data;
-import org.springframework.http.HttpStatusCode;
+
 
 import java.io.Serializable;
 import java.util.*;
@@ -13,16 +13,16 @@ public class WeatherDataAndResponseStatusDTO implements Serializable {
     private List<WeatherData> extended = new ArrayList<>();
     private String zip;
     private String countryCode;
-    private HttpStatusCode httpStatusCode;
     private WeatherData current;
+    private long statusCode = 0;
 
-    public boolean ok()
-    {
-        return httpStatusCode != null && httpStatusCode.is2xxSuccessful();
+    public boolean ok() {
+        return statusCode == 200;
     }
 
-
-
+    public void setStatusCode(long statusCode) {
+        this.statusCode = statusCode;
+    }
 
     public void addWeatherData(WeatherData data) {
         if (data != null) {
@@ -67,13 +67,6 @@ public class WeatherDataAndResponseStatusDTO implements Serializable {
         this.countryCode = countryCode;
     }
 
-    public HttpStatusCode getHttpStatusCode() {
-        return httpStatusCode;
-    }
-
-    public void setHttpStatusCode(HttpStatusCode httpStatusCode) {
-        this.httpStatusCode = httpStatusCode;
-    }
 
     public WeatherData getCurrent() {
         return current;

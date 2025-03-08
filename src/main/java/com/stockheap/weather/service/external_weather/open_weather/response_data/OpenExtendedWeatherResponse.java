@@ -18,16 +18,16 @@ public class OpenExtendedWeatherResponse implements Serializable {
 
 
     private boolean isValid = true;
-    private HttpStatusCode httpStatusCode = HttpStatusCode.valueOf(200);
+    private long statusCode;
 
     public OpenExtendedWeatherResponse() {
         super();
 
     }
 
-    public OpenExtendedWeatherResponse(boolean isValid, HttpStatusCode httpStatusCode) {
+    public OpenExtendedWeatherResponse(boolean isValid, long statusCode) {
         this.isValid = isValid;
-        this.httpStatusCode = httpStatusCode;
+        this.statusCode = statusCode;
 
     }
 
@@ -38,9 +38,13 @@ public class OpenExtendedWeatherResponse implements Serializable {
     }
 
     @JsonIgnore
-    public HttpStatusCode getHttpStatusCode() {
-        return httpStatusCode;
+    public long getStatusCode() {
+        return statusCode;
     }
+
+
+
+
 
     public List<MainAndDateTime> getList() {
         if (list == null) {
