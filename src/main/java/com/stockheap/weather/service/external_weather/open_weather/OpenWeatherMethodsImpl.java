@@ -139,13 +139,13 @@ public class OpenWeatherMethodsImpl implements ExternalWeatherMethods {
     }
 
 
-    private ExtendedWeatherAndResponseStatusDTO createWeatherDataAndResponseStatusDTO(String zip,
+    public ExtendedWeatherAndResponseStatusDTO createWeatherDataAndResponseStatusDTO(String zip,
                                                                                      String country,
                                                                                      String units,
                                                                                      OpenExtendedWeatherResponse openExtendedWeatherResponse) {
         ExtendedWeatherAndResponseStatusDTO weatherDataAndResponseStatusDTO = new ExtendedWeatherAndResponseStatusDTO();
         weatherDataAndResponseStatusDTO.setZip(zip);
-        weatherDataAndResponseStatusDTO.setZip(country);
+        weatherDataAndResponseStatusDTO.setCountryCode(country);
         weatherDataAndResponseStatusDTO.setFromCache(false);
         long timeZone = 0;
         if (openExtendedWeatherResponse != null &&
