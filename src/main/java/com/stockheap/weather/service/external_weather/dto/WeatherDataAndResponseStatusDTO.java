@@ -16,6 +16,17 @@ public class WeatherDataAndResponseStatusDTO implements Serializable {
     private WeatherData current;
     private long statusCode = 0;
 
+    public WeatherDataAndResponseStatusDTO()
+    {
+        super();
+    }
+
+    public WeatherDataAndResponseStatusDTO( long statusCode)
+    {
+
+        this.statusCode = statusCode;
+    }
+
     public boolean ok() {
         return statusCode == 200;
     }
