@@ -17,16 +17,14 @@ public class CurrentWeatherAndResponseStatusDTO extends BaseWeatherAndResponseSt
         super();
     }
 
-    public CurrentWeatherAndResponseStatusDTO(Integer statusCode)
-    {
-        super(statusCode);
-    }
 
 
-    public CurrentWeatherAndResponseStatusDTO(Integer statusCode, boolean fromCache)
+
+    public CurrentWeatherAndResponseStatusDTO(Integer statusCode, boolean fromCache, String message)
     {
         super(statusCode);
         setFromCache(fromCache);
+        setMessage(message);
     }
 
 

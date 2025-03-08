@@ -21,6 +21,7 @@ public class OpenExtendedWeatherResponse implements Serializable {
 
     private boolean isValid = true;
     private long statusCode;
+    private String message ="";
 
     public OpenExtendedWeatherResponse() {
         super();
@@ -33,6 +34,10 @@ public class OpenExtendedWeatherResponse implements Serializable {
 
     }
 
+    @JsonSetter("message")
+    public void setMessage(String message) {
+        this.message = message;
+    }
 
     @JsonIgnore
     public boolean isValid() {

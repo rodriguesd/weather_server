@@ -21,10 +21,11 @@ public class ExtendedWeatherAndResponseStatusDTO extends BaseWeatherAndResponseS
         super(statusCode);
     }
 
-    public ExtendedWeatherAndResponseStatusDTO(Integer statusCode, boolean fromCache)
+    public ExtendedWeatherAndResponseStatusDTO(Integer statusCode, boolean fromCache, String message)
     {
         super(statusCode);
         setFromCache(fromCache);
+        setMessage(message);
     }
 
     public void addWeatherData(WeatherData data) {

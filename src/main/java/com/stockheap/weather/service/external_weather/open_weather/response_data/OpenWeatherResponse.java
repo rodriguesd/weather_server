@@ -27,6 +27,7 @@ public class OpenWeatherResponse {
 
     private boolean isValid = true;
     private long statusCode = HttpStatus.OK.value();
+    private String message ="";
 
     public OpenWeatherResponse() {
         super();
@@ -49,7 +50,10 @@ public class OpenWeatherResponse {
         return statusCode;
     }
 
-
+    @JsonSetter("message")
+    public void setMessage(String message) {
+        this.message = message;
+    }
 
     @JsonSetter("dt")
     public void setDt(long dt) {

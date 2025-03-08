@@ -17,6 +17,7 @@ public class ExtendedWeatherResponse implements Serializable {
 
     private List<WeatherData> extended = new ArrayList<>();
     private boolean cached;
+    private String message;
 
 
 }

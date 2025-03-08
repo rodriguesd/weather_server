@@ -10,6 +10,7 @@ import com.stockheap.weather.service.external_weather.dto.ExtendedWeatherAndResp
 import com.stockheap.weather.service.external_weather.open_weather.response_data.*;
 import com.stockheap.weather.util.DateUtil;
 import jakarta.annotation.PostConstruct;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -175,6 +176,11 @@ public class OpenWeatherMethodsImpl implements ExternalWeatherMethods {
 
         if (openExtendedWeatherResponse != null) {
 
+            if(StringUtils.isNotBlank(openExtendedWeatherResponse.getMessage()))
+            {
+                weatherDataAndResponseStatusDTO.setMessage(openExtendedWeatherResponse.getMessage());
+            }
+
             weatherDataAndResponseStatusDTO.setStatusCode(openExtendedWeatherResponse.getCod());
             if(openExtendedWeatherResponse.getCod() == 0)
             {
@@ -221,6 +227,11 @@ public class OpenWeatherMethodsImpl implements ExternalWeatherMethods {
             }
         }
         if (openWeatherResponse != null) {
+
+            if(StringUtils.isNotBlank(openWeatherResponse.getMessage()))
+            {
+                weatherDataAndResponseStatusDTO.setMessage(openWeatherResponse.getMessage());
+            }
             weatherDataAndResponseStatusDTO.setStatusCode(openWeatherResponse.getCod());
             if(openWeatherResponse.getCod() == 0)
             {

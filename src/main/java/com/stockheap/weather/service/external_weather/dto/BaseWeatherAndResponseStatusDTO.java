@@ -14,6 +14,7 @@ public class BaseWeatherAndResponseStatusDTO implements Serializable {
     private String countryCode;
     private Integer statusCode = 0;
     private boolean fromCache = true;
+    private String message;
 
     public BaseWeatherAndResponseStatusDTO()
     {

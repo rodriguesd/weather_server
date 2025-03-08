@@ -27,7 +27,7 @@ public class WeatherMethodsImpl implements WeatherMethods {
             return Mono.fromCallable(() -> externalWeatherMethods.getCurrentWeather(zip, country))
                     .flatMap(mono -> mono);
         }
-        return Mono.just(new CurrentWeatherAndResponseStatusDTO(HttpStatus.BAD_REQUEST.value(), false));
+        return Mono.just(new CurrentWeatherAndResponseStatusDTO(HttpStatus.BAD_REQUEST.value(), false,"Invalid zip or country"));
 
 
     }
@@ -39,7 +39,7 @@ public class WeatherMethodsImpl implements WeatherMethods {
             return Mono.fromCallable(() -> externalWeatherMethods.getExtendedWeather(zip, country)).
                     flatMap(mono -> mono);
         }
-        return Mono.just(new ExtendedWeatherAndResponseStatusDTO(HttpStatus.BAD_REQUEST.value(), false));
+        return Mono.just(new ExtendedWeatherAndResponseStatusDTO(HttpStatus.BAD_REQUEST.value(), false, "Invalid zip or country"));
     }
 
 

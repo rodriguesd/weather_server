@@ -97,6 +97,7 @@ public class CurrentWeatherMethodsTest {
         assertTrue(currentWeatherAndResponseStatusDTO.getCurrent() == null);
         assertTrue(StringUtils.isBlank(currentWeatherAndResponseStatusDTO.getZip()));
         assertTrue(StringUtils.isBlank(currentWeatherAndResponseStatusDTO.getCountryCode()));
+        assertTrue(StringUtils.isNotBlank(currentWeatherAndResponseStatusDTO.getMessage()));
     }
 
 
@@ -124,6 +125,7 @@ public class CurrentWeatherMethodsTest {
         assertTrue(currentWeatherAndResponseStatusDTO.getCurrent() == null);
         assertTrue(StringUtils.isNotBlank(currentWeatherAndResponseStatusDTO.getZip()));
         assertTrue(StringUtils.isNotBlank(currentWeatherAndResponseStatusDTO.getCountryCode()));
+        assertTrue(StringUtils.isNotBlank(currentWeatherAndResponseStatusDTO.getMessage()));
     }
 
 
@@ -132,17 +134,96 @@ public class CurrentWeatherMethodsTest {
 //    You must add API token with granted access to the product to the request before returning it.
 
     @Test
-    public void testExtended401() {
+    public void testExtended401() throws Exception{
 
+
+        String zip = "94121";
+        String countryCode = "US";
+
+        String error401 = ResourceFileReaderSingleton.getInstance().readFile("open_weather_current_401.json");
+        ExternalWeatherMethods externalWeatherMethods = Mockito.mock(OpenWeatherMethodsImpl.class);
+
+        assertTrue(StringUtils.isNotBlank(error401));
+
+        Mono<CurrentWeatherAndResponseStatusDTO> mono =     createCurrent(error401, zip, countryCode);
+        when(externalWeatherMethods.getCurrentWeather(zip,countryCode )).thenReturn(mono);
+
+        WeatherMethods weatherMethods = new WeatherMethodsImpl(externalWeatherMethods);
+        Mono<CurrentWeatherAndResponseStatusDTO> result = weatherMethods.getCurrentWeather(zip, countryCode);
+
+        CurrentWeatherAndResponseStatusDTO currentWeatherAndResponseStatusDTO  = result.block();
+        assertTrue(currentWeatherAndResponseStatusDTO != null);
+        assertFalse(currentWeatherAndResponseStatusDTO.isFromCache());
+        assertFalse(currentWeatherAndResponseStatusDTO.ok());
+        assertTrue(currentWeatherAndResponseStatusDTO.getCurrent() == null);
+        assertTrue(StringUtils.isNotBlank(currentWeatherAndResponseStatusDTO.getZip()));
+        assertTrue(StringUtils.isNotBlank(currentWeatherAndResponseStatusDTO.getCountryCode()));
+        assertTrue(currentWeatherAndResponseStatusDTO.getStatusCode() == 401);
+        assertTrue(StringUtils.isNotBlank(currentWeatherAndResponseStatusDTO.getMessage()));
     }
 
-    @Test
-    public void testExtended404() {
 
+   // Error 404 - Not Found. You can get 404 error if data with
+    // requested parameters (lat, lon, date etc) does not exist in service database.
+    // You must not retry the same request.
+
+    @Test
+    public void testExtended404() throws Exception {
+        String zip = "94121";
+        String countryCode = "US";
+
+        String error401 = ResourceFileReaderSingleton.getInstance().readFile("open_weather_current_404.json");
+        ExternalWeatherMethods externalWeatherMethods = Mockito.mock(OpenWeatherMethodsImpl.class);
+
+        assertTrue(StringUtils.isNotBlank(error401));
+
+        Mono<CurrentWeatherAndResponseStatusDTO> mono =     createCurrent(error401, zip, countryCode);
+        when(externalWeatherMethods.getCurrentWeather(zip,countryCode )).thenReturn(mono);
+
+        WeatherMethods weatherMethods = new WeatherMethodsImpl(externalWeatherMethods);
+        Mono<CurrentWeatherAndResponseStatusDTO> result = weatherMethods.getCurrentWeather(zip, countryCode);
+
+        CurrentWeatherAndResponseStatusDTO currentWeatherAndResponseStatusDTO  = result.block();
+        assertTrue(currentWeatherAndResponseStatusDTO != null);
+        assertFalse(currentWeatherAndResponseStatusDTO.isFromCache());
+        assertFalse(currentWeatherAndResponseStatusDTO.ok());
+        assertTrue(currentWeatherAndResponseStatusDTO.getCurrent() == null);
+        assertTrue(StringUtils.isNotBlank(currentWeatherAndResponseStatusDTO.getZip()));
+        assertTrue(StringUtils.isNotBlank(currentWeatherAndResponseStatusDTO.getCountryCode()));
+        assertTrue(currentWeatherAndResponseStatusDTO.getStatusCode() == 404);
+        assertTrue(StringUtils.isNotBlank(currentWeatherAndResponseStatusDTO.getMessage()));
     }
 
+
+
+    //Error 429 - Too Many Requests. You can get 429 error if key quota of requests for provided API to this API was exceeded.
+    //You may retry request after some time or after extending your key quota.
     @Test
-    public void testExtended429() {
+    public void testExtended429() throws Exception{
+
+        String zip = "94121";
+        String countryCode = "US";
+
+        String error401 = ResourceFileReaderSingleton.getInstance().readFile("open_weather_current_429.json");
+        ExternalWeatherMethods externalWeatherMethods = Mockito.mock(OpenWeatherMethodsImpl.class);
+
+        assertTrue(StringUtils.isNotBlank(error401));
+
+        Mono<CurrentWeatherAndResponseStatusDTO> mono =     createCurrent(error401, zip, countryCode);
+        when(externalWeatherMethods.getCurrentWeather(zip,countryCode )).thenReturn(mono);
+
+        WeatherMethods weatherMethods = new WeatherMethodsImpl(externalWeatherMethods);
+        Mono<CurrentWeatherAndResponseStatusDTO> result = weatherMethods.getCurrentWeather(zip, countryCode);
+
+        CurrentWeatherAndResponseStatusDTO currentWeatherAndResponseStatusDTO  = result.block();
+        assertTrue(currentWeatherAndResponseStatusDTO != null);
+        assertFalse(currentWeatherAndResponseStatusDTO.isFromCache());
+        assertFalse(currentWeatherAndResponseStatusDTO.ok());
+        assertTrue(currentWeatherAndResponseStatusDTO.getCurrent() == null);
+        assertTrue(StringUtils.isNotBlank(currentWeatherAndResponseStatusDTO.getZip()));
+        assertTrue(StringUtils.isNotBlank(currentWeatherAndResponseStatusDTO.getCountryCode()));
+        assertTrue(currentWeatherAndResponseStatusDTO.getStatusCode() == 429);
+        assertTrue(StringUtils.isNotBlank(currentWeatherAndResponseStatusDTO.getMessage()));
 
     }
 
@@ -153,7 +234,31 @@ public class CurrentWeatherMethodsTest {
     //this error into your email to let us analyze it and find a solution
     //for you promptly. You may retry the request which led to this error.
     @Test
-    public void testExtended500() {
+    public void testExtended500() throws Exception{
+
+        String zip = "94121";
+        String countryCode = "US";
+
+        String error401 = ResourceFileReaderSingleton.getInstance().readFile("open_weather_current_500.json");
+        ExternalWeatherMethods externalWeatherMethods = Mockito.mock(OpenWeatherMethodsImpl.class);
+
+        assertTrue(StringUtils.isNotBlank(error401));
+
+        Mono<CurrentWeatherAndResponseStatusDTO> mono =     createCurrent(error401, zip, countryCode);
+        when(externalWeatherMethods.getCurrentWeather(zip,countryCode )).thenReturn(mono);
+
+        WeatherMethods weatherMethods = new WeatherMethodsImpl(externalWeatherMethods);
+        Mono<CurrentWeatherAndResponseStatusDTO> result = weatherMethods.getCurrentWeather(zip, countryCode);
+
+        CurrentWeatherAndResponseStatusDTO currentWeatherAndResponseStatusDTO  = result.block();
+        assertTrue(currentWeatherAndResponseStatusDTO != null);
+        assertFalse(currentWeatherAndResponseStatusDTO.isFromCache());
+        assertFalse(currentWeatherAndResponseStatusDTO.ok());
+        assertTrue(currentWeatherAndResponseStatusDTO.getCurrent() == null);
+        assertTrue(StringUtils.isNotBlank(currentWeatherAndResponseStatusDTO.getZip()));
+        assertTrue(StringUtils.isNotBlank(currentWeatherAndResponseStatusDTO.getCountryCode()));
+        assertTrue(currentWeatherAndResponseStatusDTO.getStatusCode() == 500);
+        assertTrue(StringUtils.isNotBlank(currentWeatherAndResponseStatusDTO.getMessage()));
 
     }
 

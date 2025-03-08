@@ -16,6 +16,8 @@ public class CurrentWeatherResponse implements Serializable {
 
     private WeatherData current;
     private boolean cached;
+    private String message;
+
 
 
 }
