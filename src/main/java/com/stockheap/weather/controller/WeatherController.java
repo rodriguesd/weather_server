@@ -5,6 +5,7 @@ import com.stockheap.weather.controller.response.CurrentWeatherResponse;
 import com.stockheap.weather.controller.response.ExtendedWeatherResponse;
 import com.stockheap.weather.service.weather.WeatherMethods;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +20,7 @@ import java.util.ArrayList;
 public class WeatherController {
 
 
+    @Autowired
     private WeatherMethods weatherMethods;
 
 
