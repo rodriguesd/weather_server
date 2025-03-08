@@ -30,7 +30,7 @@ public class WeatherController {
                         CurrentWeatherResponse currentWeatherResponse = new CurrentWeatherResponse(weatherDataAndResponseStatusDTO.getCurrent(), new ArrayList<>());
                         return ResponseEntity.ok(currentWeatherResponse);
                     } else {
-                        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new CurrentWeatherResponse());
+                        return ResponseEntity.status(HttpStatus.resolve(weatherDataAndResponseStatusDTO.getStatusCode().intValue())).body(new CurrentWeatherResponse());
                     }
                 })
                 .onErrorReturn(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new CurrentWeatherResponse()));
@@ -44,7 +44,7 @@ public class WeatherController {
                         ExtendedWeatherResponse extendedWeatherResponse = new ExtendedWeatherResponse(weatherDataAndResponseStatusDTO.getExtended());
                         return ResponseEntity.ok(extendedWeatherResponse);
                     } else {
-                        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ExtendedWeatherResponse());
+                        return ResponseEntity.status(HttpStatus.resolve(weatherDataAndResponseStatusDTO.getStatusCode().intValue())).body(new ExtendedWeatherResponse());
                     }
                 })
                 .onErrorReturn(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ExtendedWeatherResponse()));

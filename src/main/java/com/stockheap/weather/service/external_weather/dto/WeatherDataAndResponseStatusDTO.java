@@ -76,7 +76,7 @@ public class WeatherDataAndResponseStatusDTO implements Serializable {
         this.current = current;
     }
 
-    public long getStatusCode() {
+    public Long getStatusCode() {
         return statusCode;
     }
 }
