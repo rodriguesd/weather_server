@@ -3,6 +3,7 @@ package com.stockheap.weather.service.weather;
 import com.stockheap.weather.WeatherConstants;
 import com.stockheap.weather.service.external_weather.common.ExternalWeatherMethods;
 import com.stockheap.weather.service.external_weather.dto.WeatherDataAndResponseStatusDTO;
+import com.stockheap.weather.util.ZipUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
@@ -43,7 +44,8 @@ public class WeatherMethodsImpl implements WeatherMethods {
 
     private boolean isDataValid(String zip, String country) {
 
-        return WeatherConstants.CountryCodes.isValidCode(country);
+        return WeatherConstants.CountryCodes.isValidCode(country) &&
+                ZipUtil.isValidZipCode(country, zip);
     }
 
 }
