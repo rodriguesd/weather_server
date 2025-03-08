@@ -183,7 +183,12 @@ public class OpenWeatherMethodsImpl implements ExternalWeatherMethods {
         }
 
         if (openExtendedWeatherResponse != null) {
+
             weatherDataAndResponseStatusDTO.setStatusCode(openExtendedWeatherResponse.getCod());
+            if(openExtendedWeatherResponse.getCod() == 0)
+            {
+                weatherDataAndResponseStatusDTO.setStatusCode(HttpStatus.FORBIDDEN.value());
+            }
         }
 
         return weatherDataAndResponseStatusDTO;
@@ -224,6 +229,10 @@ public class OpenWeatherMethodsImpl implements ExternalWeatherMethods {
         }
         if (openWeatherResponse != null) {
             weatherDataAndResponseStatusDTO.setStatusCode(openWeatherResponse.getCod());
+            if(openWeatherResponse.getCod() == 0)
+            {
+                weatherDataAndResponseStatusDTO.setStatusCode(HttpStatus.FORBIDDEN.value());
+            }
         }
 
         return weatherDataAndResponseStatusDTO;

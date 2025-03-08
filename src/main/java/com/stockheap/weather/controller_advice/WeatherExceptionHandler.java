@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class WeatherExceptionHandler {
 
     @ExceptionHandler({Exception.class})
-    public ResponseEntity<GenericWeatherResponse> handleStudentNotFoundException(Exception exception) {
+    public ResponseEntity<GenericWeatherResponse> weatherServerException(Exception exception) {
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(new GenericWeatherResponse(exception.getMessage()));

@@ -22,23 +22,15 @@ public class WeatherMethodsImpl implements WeatherMethods {
     @Cacheable(unless="#result == null or #result.statusCode != 200 or #result.current == null", value = WeatherConstants.CacheNames.WEATHER_FORECAST_CACHE, key = "'CACHE_ZIP_PREFIX_CURRENT_' + #zip")
     public Mono<WeatherDataAndResponseStatusDTO> getCurrentWeather(String zip, String country) {
         return Mono.fromCallable(() -> externalWeatherMethods.getCurrentWeather(zip, country))
-                .flatMap(mono -> mono)
-                 .filter(value -> value != null &&
-                        value.getCurrent() != null &&
-                        value.getStatusCode() == HttpStatus.OK.value())
-                .cache();
+                .flatMap(mono -> mono);
 
 
     }
 
     @Cacheable(unless="#result == null or #result.statusCode != 200 or #result.extended == null or #result.extended.size() == 0", value = WeatherConstants.CacheNames.WEATHER_FORECAST_CACHE, key = "'CACHE_ZIP_PREFIX_EXT_' + #zip")
     public Mono<WeatherDataAndResponseStatusDTO> getExtendedWeather(String zip, String country) {
-        return Mono.fromCallable(() -> externalWeatherMethods.getExtendedWeather(zip, country)).flatMap(mono -> mono)
-                .filter(value -> value != null &&
-                        value.getExtended() != null &&
-                        value.getExtended().size() > 0 &&
-                        value.getStatusCode() == HttpStatus.OK.value())
-                .cache();
+        return Mono.fromCallable(() -> externalWeatherMethods.getExtendedWeather(zip, country)).
+                flatMap(mono -> mono);
     }
 
 
