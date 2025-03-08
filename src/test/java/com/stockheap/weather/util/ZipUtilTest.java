@@ -42,7 +42,7 @@ public class ZipUtilTest {
     @Test
     public void testValidZipPatternsDE()
     {
-        boolean ok = ZipUtil.isValidZipCode("DE", "10115–14199");
+        boolean ok = ZipUtil.isValidZipCode("DE", "12529");
         assertTrue(ok);
         ok = ZipUtil.isValidZipCode("DE", "K4A 9Z9");
         assertFalse(ok);
