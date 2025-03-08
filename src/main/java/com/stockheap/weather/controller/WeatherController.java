@@ -28,7 +28,7 @@ public class WeatherController {
         return weatherMethods.getCurrentWeather(zip, countryCode)
                 .map(weatherDataAndResponseStatusDTO -> {
                     if (weatherDataAndResponseStatusDTO != null && weatherDataAndResponseStatusDTO.ok()) {
-                        CurrentWeatherResponse currentWeatherResponse = new CurrentWeatherResponse(weatherDataAndResponseStatusDTO.getCurrent(), new ArrayList<>());
+                        CurrentWeatherResponse currentWeatherResponse = new CurrentWeatherResponse(weatherDataAndResponseStatusDTO.getCurrent(),weatherDataAndResponseStatusDTO.isFromCache());
                         return ResponseEntity.ok(currentWeatherResponse);
                     } else {
                         return ResponseEntity.status(HttpStatus.resolve(weatherDataAndResponseStatusDTO.getStatusCode().intValue())).body(new CurrentWeatherResponse());
@@ -42,7 +42,7 @@ public class WeatherController {
         return weatherMethods.getExtendedWeather(zip, countryCode)
                 .map(weatherDataAndResponseStatusDTO -> {
                     if (weatherDataAndResponseStatusDTO != null && weatherDataAndResponseStatusDTO.ok()) {
-                        ExtendedWeatherResponse extendedWeatherResponse = new ExtendedWeatherResponse(weatherDataAndResponseStatusDTO.getExtended());
+                        ExtendedWeatherResponse extendedWeatherResponse = new ExtendedWeatherResponse(weatherDataAndResponseStatusDTO.getExtended(), weatherDataAndResponseStatusDTO.isFromCache());
                         return ResponseEntity.ok(extendedWeatherResponse);
                     } else {
                         return ResponseEntity.status(HttpStatus.resolve(weatherDataAndResponseStatusDTO.getStatusCode().intValue())).body(new ExtendedWeatherResponse());
