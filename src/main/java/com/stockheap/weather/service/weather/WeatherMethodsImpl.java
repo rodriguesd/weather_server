@@ -6,6 +6,7 @@ import com.stockheap.weather.service.external_weather.dto.WeatherDataAndResponse
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
@@ -24,7 +25,7 @@ public class WeatherMethodsImpl implements WeatherMethods {
             return Mono.fromCallable(() -> externalWeatherMethods.getCurrentWeather(zip, country))
                     .flatMap(mono -> mono);
         }
-        return Mono.just(new WeatherDataAndResponseStatusDTO(WeatherConstants.ErrorCodes.INVALID_DATA));
+        return Mono.just(new WeatherDataAndResponseStatusDTO(HttpStatus.BAD_REQUEST.value()));
 
 
     }
@@ -36,7 +37,7 @@ public class WeatherMethodsImpl implements WeatherMethods {
             return Mono.fromCallable(() -> externalWeatherMethods.getExtendedWeather(zip, country)).
                     flatMap(mono -> mono);
         }
-        return Mono.just(new WeatherDataAndResponseStatusDTO(WeatherConstants.ErrorCodes.INVALID_DATA));
+        return Mono.just(new WeatherDataAndResponseStatusDTO(HttpStatus.BAD_REQUEST.value()));
     }
 
 
