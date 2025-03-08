@@ -5,22 +5,30 @@ import com.stockheap.weather.controller.response.CurrentWeatherResponse;
 import com.stockheap.weather.controller.response.ExtendedWeatherResponse;
 import com.stockheap.weather.service.weather.WeatherMethods;
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
+import java.util.Stack;
 
 
 @RestController
 @RequestMapping("/weather")
-@AllArgsConstructor
 public class WeatherController {
 
 
-    private WeatherMethods weatherMethods;
+
+    private final WeatherMethods weatherMethods;
+
+    @Autowired
+    public WeatherController(WeatherMethods weatherMethods) {
+        this.weatherMethods = weatherMethods;
+    }
+
+
 
 
     @GetMapping("/v1/current/{countryCode}/{zip}")

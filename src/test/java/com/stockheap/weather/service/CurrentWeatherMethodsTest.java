@@ -1,15 +1,13 @@
 package com.stockheap.weather.service;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
+
 import com.stockheap.weather.helpers.ResourceFileReaderSingleton;
+import com.stockheap.weather.helpers.TestDataUtils;
 import com.stockheap.weather.service.external_weather.common.ExternalWeatherMethods;
 import com.stockheap.weather.service.external_weather.dto.CurrentWeatherAndResponseStatusDTO;
 import com.stockheap.weather.service.external_weather.open_weather.OpenWeatherMethodsImpl;
-import com.stockheap.weather.service.external_weather.open_weather.response_data.OpenWeatherResponse;
 import com.stockheap.weather.service.weather.WeatherMethods;
 import com.stockheap.weather.service.weather.WeatherMethodsImpl;
-import jakarta.annotation.PostConstruct;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.commons.util.StringUtils;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -28,13 +26,6 @@ import static org.mockito.Mockito.*;
 public class CurrentWeatherMethodsTest {
 
 
-    private static ObjectMapper MAPPER = new ObjectMapper();
-
-    @PostConstruct
-    private void init() {
-        MAPPER.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-    }
-
 
     @Test
     public void testExtendedOk200() throws Exception {
@@ -48,7 +39,7 @@ public class CurrentWeatherMethodsTest {
 
         assertTrue(StringUtils.isNotBlank(ok200));
 
-        Mono<CurrentWeatherAndResponseStatusDTO> mono =     createCurrent(ok200, zip, countryCode);
+        Mono<CurrentWeatherAndResponseStatusDTO> mono =     TestDataUtils.createCurrent(ok200, zip, countryCode);
         when(externalWeatherMethods.getCurrentWeather(zip,countryCode )).thenReturn(mono);
 
         WeatherMethods weatherMethods = new WeatherMethodsImpl(externalWeatherMethods);
@@ -83,7 +74,7 @@ public class CurrentWeatherMethodsTest {
 
         assertTrue(StringUtils.isNotBlank(error400));
 
-        Mono<CurrentWeatherAndResponseStatusDTO> mono =     createCurrent(error400, zip, countryCode);
+        Mono<CurrentWeatherAndResponseStatusDTO> mono =     TestDataUtils.createCurrent(error400, zip, countryCode);
         when(externalWeatherMethods.getCurrentWeather(zip,countryCode )).thenReturn(mono);
 
         WeatherMethods weatherMethods = new WeatherMethodsImpl(externalWeatherMethods);
@@ -111,7 +102,7 @@ public class CurrentWeatherMethodsTest {
 
         assertTrue(StringUtils.isNotBlank(error400));
 
-        Mono<CurrentWeatherAndResponseStatusDTO> mono =     createCurrent(error400, zip, countryCode);
+        Mono<CurrentWeatherAndResponseStatusDTO> mono =     TestDataUtils.createCurrent(error400, zip, countryCode);
         when(externalWeatherMethods.getCurrentWeather(zip,countryCode )).thenReturn(mono);
 
         WeatherMethods weatherMethods = new WeatherMethodsImpl(externalWeatherMethods);
@@ -145,7 +136,7 @@ public class CurrentWeatherMethodsTest {
 
         assertTrue(StringUtils.isNotBlank(error401));
 
-        Mono<CurrentWeatherAndResponseStatusDTO> mono =     createCurrent(error401, zip, countryCode);
+        Mono<CurrentWeatherAndResponseStatusDTO> mono =     TestDataUtils.createCurrent(error401, zip, countryCode);
         when(externalWeatherMethods.getCurrentWeather(zip,countryCode )).thenReturn(mono);
 
         WeatherMethods weatherMethods = new WeatherMethodsImpl(externalWeatherMethods);
@@ -177,7 +168,7 @@ public class CurrentWeatherMethodsTest {
 
         assertTrue(StringUtils.isNotBlank(error401));
 
-        Mono<CurrentWeatherAndResponseStatusDTO> mono =     createCurrent(error401, zip, countryCode);
+        Mono<CurrentWeatherAndResponseStatusDTO> mono =     TestDataUtils.createCurrent(error401, zip, countryCode);
         when(externalWeatherMethods.getCurrentWeather(zip,countryCode )).thenReturn(mono);
 
         WeatherMethods weatherMethods = new WeatherMethodsImpl(externalWeatherMethods);
@@ -209,7 +200,7 @@ public class CurrentWeatherMethodsTest {
 
         assertTrue(StringUtils.isNotBlank(error401));
 
-        Mono<CurrentWeatherAndResponseStatusDTO> mono =     createCurrent(error401, zip, countryCode);
+        Mono<CurrentWeatherAndResponseStatusDTO> mono =     TestDataUtils.createCurrent(error401, zip, countryCode);
         when(externalWeatherMethods.getCurrentWeather(zip,countryCode )).thenReturn(mono);
 
         WeatherMethods weatherMethods = new WeatherMethodsImpl(externalWeatherMethods);
@@ -244,7 +235,7 @@ public class CurrentWeatherMethodsTest {
 
         assertTrue(StringUtils.isNotBlank(error401));
 
-        Mono<CurrentWeatherAndResponseStatusDTO> mono =     createCurrent(error401, zip, countryCode);
+        Mono<CurrentWeatherAndResponseStatusDTO> mono =     TestDataUtils.createCurrent(error401, zip, countryCode);
         when(externalWeatherMethods.getCurrentWeather(zip,countryCode )).thenReturn(mono);
 
         WeatherMethods weatherMethods = new WeatherMethodsImpl(externalWeatherMethods);
@@ -262,16 +253,6 @@ public class CurrentWeatherMethodsTest {
 
     }
 
-    private  Mono<CurrentWeatherAndResponseStatusDTO> createCurrent(String data, String zip, String countryCode) throws Exception
-    {
-        OpenWeatherResponse openWeatherResponse = MAPPER.readValue(data, OpenWeatherResponse.class);
-        assertTrue(openWeatherResponse != null);
-        OpenWeatherMethodsImpl weatherMethods  = new OpenWeatherMethodsImpl();
-        CurrentWeatherAndResponseStatusDTO currentWeatherAndResponseStatusDTO =  weatherMethods.createWeatherDataAndResponseStatusDTO(zip,
-                countryCode,
-                "imperial",
-                openWeatherResponse);
-        return Mono.just(currentWeatherAndResponseStatusDTO);
-    }
+
 
 }
