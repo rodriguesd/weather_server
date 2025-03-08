@@ -4,6 +4,7 @@ package com.stockheap.weather.controller;
 import com.stockheap.weather.controller.response.CurrentWeatherResponse;
 import com.stockheap.weather.controller.response.ExtendedWeatherResponse;
 import com.stockheap.weather.service.weather.WeatherMethods;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,7 +26,7 @@ public class WeatherController {
 
 
     @GetMapping("/v1/current/{countryCode}/{zip}")
-    public Mono<ResponseEntity<CurrentWeatherResponse>> current(@PathVariable("countryCode") String countryCode, @PathVariable("zip") String zip) {
+    public Mono<ResponseEntity<CurrentWeatherResponse>> current(@PathVariable("countryCode")  @NotBlank  String countryCode, @PathVariable("zip")  @NotBlank String zip) {
         return weatherMethods.getCurrentWeather(zip, countryCode)
                 .map(weatherDataAndResponseStatusDTO -> {
                     if (weatherDataAndResponseStatusDTO != null && weatherDataAndResponseStatusDTO.ok()) {
@@ -39,7 +40,7 @@ public class WeatherController {
     }
 
     @GetMapping("/v1/extended/{countryCode}/{zip}")
-    public Mono<ResponseEntity<ExtendedWeatherResponse>> extended(@PathVariable("countryCode") String countryCode, @PathVariable("zip") String zip) {
+    public Mono<ResponseEntity<ExtendedWeatherResponse>> extended(@PathVariable("countryCode") @NotBlank  String countryCode, @PathVariable("zip")  @NotBlank String zip) {
         return weatherMethods.getExtendedWeather(zip, countryCode)
                 .map(weatherDataAndResponseStatusDTO -> {
                     if (weatherDataAndResponseStatusDTO != null && weatherDataAndResponseStatusDTO.ok()) {
