@@ -6,6 +6,9 @@ package com.stockheap.weather.config;
 
 
 import com.stockheap.weather.WeatherConstants;
+import io.netty.channel.ChannelOption;
+import io.netty.handler.timeout.ReadTimeoutHandler;
+import io.netty.handler.timeout.WriteTimeoutHandler;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
@@ -18,6 +21,10 @@ import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.RedisSerializer;
+import org.springframework.http.client.reactive.ReactorClientHttpConnector;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.netty.http.client.HttpClient;
+
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
@@ -31,26 +38,6 @@ public class SpringConfiguration {
 
 
 
-//
-//    @Value("rest.template.connection.pool.size:50")
-//    private Integer restTempConnectionPool;
-//
-//    @Value("rest.template.max.default.routes:20")
-//    private Integer restTempMaxDefaultRoutes;
-
-
-//    @Bean
-//    public RestTemplate restTemplate() {
-//        return new RestTemplate(clientHttpRequestFactory());
-//    }
-
-//    @Bean
-//    public ClientHttpRequestFactory clientHttpRequestFactory() {
-//        return new HttpComponentsClientHttpRequestFactory(httpClient());
-//    }
-//
-//
-
 
     @Value("${spring.redis.host}")
     private String redisHost;
@@ -61,6 +48,21 @@ public class SpringConfiguration {
     @Value("${open.weather.expire.time.in.seconds}")
     private long cacheExpireTimeInSeconds;
 
+
+    @Value("${open.weather.base.url}")
+    private String  openWeatherBaseUrl;
+
+
+
+    @Value("${web.client.connection.seconds.timeout}")
+    private int  webClientConnectionSecondsTimeout;
+
+    @Value("${web.client.read.seconds.timeout}")
+    private int webClientReadSecondsTimeout;
+
+
+    @Value("${web.client.write.seconds.timeout}")
+    private int webClientWriteSecondsTimeout;
 
 
 
@@ -88,55 +90,20 @@ public class SpringConfiguration {
     }
 
 
+    @Bean
+    public WebClient webClient() {
+        HttpClient httpClient = HttpClient.create()
+                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, webClientConnectionSecondsTimeout)
+                .responseTimeout(Duration.ofSeconds(5))
+                .doOnConnected(conn -> conn.addHandlerLast(new ReadTimeoutHandler(webClientReadSecondsTimeout))
+                        .addHandlerLast(new WriteTimeoutHandler(webClientWriteSecondsTimeout)));
 
-//    @Bean
-//    public WebClient webClient() {
-//        // Create a connection pool with limits
-//        ConnectionProvider connectionProvider = ConnectionProvider.builder("custom-pool")
-//                .maxConnections(50) // Maximum connections in the pool
-//                .pendingAcquireMaxCount(100) // Max pending requests if all connections are busy
-//                .pendingAcquireTimeout(Duration.ofMillis(5000)) // Max wait time for a connection
-//                .maxIdleTime(Duration.ofSeconds(30)) // Close idle connections after 30s
-//                .maxLifeTime(Duration.ofMinutes(5)) // Maximum connection lifetime
-//                .evictInBackground(Duration.ofSeconds(60)) // Background connection cleanup
-//                .build();
-//
-//        // Configure HttpClient with timeouts and pooling
-//        HttpClient httpClient = HttpClientBuilder.create(connectionProvider)
-//                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5000) // Connection timeout
-//                .responseTimeout(Duration.ofSeconds(10)) // Response timeout
-//                .doOnConnected(conn ->
-//                        conn.addHandlerLast(new ReadTimeoutHandler(10, TimeUnit.SECONDS)) // Read timeout
-//                                .addHandlerLast(new WriteTimeoutHandler(10, TimeUnit.SECONDS)) // Write timeout
-//                );
-//
-//
-//        PoolingHttpClientConnectionManager poolingConnManager = new PoolingHttpClientConnectionManager();
-//        poolingConnManager.setDefaultMaxPerRoute(restTempMaxDefaultRoutes);
-//        poolingConnManager.setMaxTotal(restTempConnectionPool);
-//        HttpClient httpClient2 =  HttpClientBuilder.create()
-//                .setConnectionManager(poolingConnManager)
-//                .build();
-//
-//
-//        return WebClient.builder()
-//                .baseUrl("https://jsonplaceholder.typicode.com")
-//                .clientConnector(new ClientTransportConnector(httpClient2)) // Attach HttpClient
-//                .build();
-//    }
-//
-//
-//
-//
+        return WebClient.builder()
+                .clientConnector(new ReactorClientHttpConnector(httpClient))
+                .baseUrl(openWeatherBaseUrl)
+                .build();
+    }
 
-//    @Bean
-//    public HttpClient httpClient() {
-//
-//        PoolingHttpClientConnectionManager poolingConnManager = new PoolingHttpClientConnectionManager();
-//        poolingConnManager.setDefaultMaxPerRoute(restTempMaxDefaultRoutes);
-//        poolingConnManager.setMaxTotal(restTempConnectionPool);
-//        return HttpClientBuilder.create()
-//                .setConnectionManager(poolingConnManager)
-//                .build();
-//    }
+
+
 }

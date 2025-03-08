@@ -13,6 +13,7 @@ import io.netty.channel.ChannelOption;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 import io.netty.handler.timeout.WriteTimeoutHandler;
 import jakarta.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -34,6 +35,9 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class OpenWeatherMethodsImpl implements ExternalWeatherMethods {
 
+
+    @Autowired
+    private WebClient webClient;
 
     @Value("${open.weather.api.key}")
     private String openWeatherApiKey;
@@ -95,7 +99,7 @@ public class OpenWeatherMethodsImpl implements ExternalWeatherMethods {
     public Mono<WeatherDataAndResponseStatusDTO> getCurrentWeather(String zip, String country) {
 
         MultiValueMap<String, String> params = generateParams(zip, country);
-        WebClient webClient = create();
+
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder.path(openWeatherCurrentWeatherUrl).queryParams(params)
                         .build()).exchangeToMono(clientResponse -> {
@@ -119,7 +123,6 @@ public class OpenWeatherMethodsImpl implements ExternalWeatherMethods {
 
     public Mono<WeatherDataAndResponseStatusDTO> getExtendedWeather(String zip, String country) {
         MultiValueMap<String, String> params = generateParams(zip, country);
-        WebClient webClient = create();
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder.path(openWeatherExtendedWeatherUrl).queryParams(params)
                         .build()).exchangeToMono(clientResponse -> {
@@ -226,20 +229,7 @@ public class OpenWeatherMethodsImpl implements ExternalWeatherMethods {
         return weatherDataAndResponseStatusDTO;
     }
 
-    private WebClient create() {
 
-        HttpClient httpClient = HttpClient.create()
-                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5000)
-                .responseTimeout(Duration.ofMillis(5000))
-                .doOnConnected(conn ->
-                        conn.addHandlerLast(new ReadTimeoutHandler(5000, TimeUnit.MILLISECONDS))
-                                .addHandlerLast(new WriteTimeoutHandler(5000, TimeUnit.MILLISECONDS)));
-        return WebClient.builder()
-                .baseUrl(openWeatherBaseUrl)
-                .clientConnector(new ReactorClientHttpConnector(httpClient))
-                .build();
-
-    }
 
 
 }
