@@ -2,7 +2,6 @@ package com.stockheap.weather.service;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.stockheap.weather.data.common.dto.WeatherData;
 import com.stockheap.weather.helpers.ResourceFileReaderSingleton;
 import com.stockheap.weather.service.external_weather.common.ExternalWeatherMethods;
 import com.stockheap.weather.service.external_weather.dto.CurrentWeatherAndResponseStatusDTO;
@@ -21,16 +20,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.mockito.Mockito;
 import org.springframework.http.HttpStatus;
 import reactor.core.publisher.Mono;
-import reactor.test.StepVerifier;
 
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
-public class WeatherMethodsTest {
+public class CurrentWeatherMethodsTest {
 
 
     private static ObjectMapper MAPPER = new ObjectMapper();
