@@ -5,7 +5,8 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.stockheap.weather.data.common.dto.WeatherData;
 import com.stockheap.weather.service.external_weather.common.ExternalWeatherMethods;
-import com.stockheap.weather.service.external_weather.dto.WeatherDataAndResponseStatusDTO;
+import com.stockheap.weather.service.external_weather.dto.CurrentWeatherAndResponseStatusDTO;
+import com.stockheap.weather.service.external_weather.dto.ExtendedWeatherAndResponseStatusDTO;
 import com.stockheap.weather.service.external_weather.open_weather.response_data.*;
 import com.stockheap.weather.util.DateUtil;
 import jakarta.annotation.PostConstruct;
@@ -88,7 +89,7 @@ public class OpenWeatherMethodsImpl implements ExternalWeatherMethods {
         return params;
     }
 
-    public Mono<WeatherDataAndResponseStatusDTO> getCurrentWeather(String zip, String country) {
+    public Mono<CurrentWeatherAndResponseStatusDTO> getCurrentWeather(String zip, String country) {
 
         MultiValueMap<String, String> params = generateParams(zip, country);
 
@@ -113,7 +114,7 @@ public class OpenWeatherMethodsImpl implements ExternalWeatherMethods {
     }
 
 
-    public Mono<WeatherDataAndResponseStatusDTO> getExtendedWeather(String zip, String country) {
+    public Mono<ExtendedWeatherAndResponseStatusDTO> getExtendedWeather(String zip, String country) {
         MultiValueMap<String, String> params = generateParams(zip, country);
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder.path(openWeatherExtendedWeatherUrl).queryParams(params)
@@ -137,16 +138,14 @@ public class OpenWeatherMethodsImpl implements ExternalWeatherMethods {
     }
 
 
-    private WeatherDataAndResponseStatusDTO createWeatherDataAndResponseStatusDTO(String zip,
-                                                                                  String country,
-                                                                                  String units,
-                                                                                  OpenExtendedWeatherResponse openExtendedWeatherResponse) {
-
-
-        WeatherDataAndResponseStatusDTO weatherDataAndResponseStatusDTO = new WeatherDataAndResponseStatusDTO();
+    private ExtendedWeatherAndResponseStatusDTO createWeatherDataAndResponseStatusDTO(String zip,
+                                                                                     String country,
+                                                                                     String units,
+                                                                                     OpenExtendedWeatherResponse openExtendedWeatherResponse) {
+        ExtendedWeatherAndResponseStatusDTO weatherDataAndResponseStatusDTO = new ExtendedWeatherAndResponseStatusDTO();
         weatherDataAndResponseStatusDTO.setZip(zip);
         weatherDataAndResponseStatusDTO.setZip(country);
-
+        weatherDataAndResponseStatusDTO.setFromCache(false);
         long timeZone = 0;
         if (openExtendedWeatherResponse != null &&
                 openExtendedWeatherResponse.getCity() != null) {
@@ -203,13 +202,14 @@ public class OpenWeatherMethodsImpl implements ExternalWeatherMethods {
     }
 
 
-    private WeatherDataAndResponseStatusDTO createWeatherDataAndResponseStatusDTO(String zip,
-                                                                                  String country,
-                                                                                  String units,
-                                                                                  OpenWeatherResponse openWeatherResponse) {
-        WeatherDataAndResponseStatusDTO weatherDataAndResponseStatusDTO = new WeatherDataAndResponseStatusDTO();
+    public CurrentWeatherAndResponseStatusDTO createWeatherDataAndResponseStatusDTO(String zip,
+                                                                                     String country,
+                                                                                     String units,
+                                                                                     OpenWeatherResponse openWeatherResponse) {
+        CurrentWeatherAndResponseStatusDTO weatherDataAndResponseStatusDTO = new CurrentWeatherAndResponseStatusDTO();
         weatherDataAndResponseStatusDTO.setZip(zip);
-        weatherDataAndResponseStatusDTO.setZip(country);
+        weatherDataAndResponseStatusDTO.setCountryCode(country);
+        weatherDataAndResponseStatusDTO.setFromCache(false);
         if (openWeatherResponse.isValid() && openWeatherResponse.getCod() == HttpStatus.OK.value()) {
 
             if (openWeatherResponse.getMain() != null) {

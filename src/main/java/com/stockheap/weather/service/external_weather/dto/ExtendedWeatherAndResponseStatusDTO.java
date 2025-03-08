@@ -1,38 +1,31 @@
 package com.stockheap.weather.service.external_weather.dto;
 
 import com.stockheap.weather.data.common.dto.WeatherData;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import java.util.ArrayList;
+import java.util.List;
 
-
-import java.io.Serializable;
-import java.util.*;
-
-@Data
-public class WeatherDataAndResponseStatusDTO implements Serializable {
+@Getter
+@Setter
+public class ExtendedWeatherAndResponseStatusDTO extends BaseWeatherAndResponseStatusDTO {
 
     private List<WeatherData> extended = new ArrayList<>();
-    private String zip;
-    private String countryCode;
-    private WeatherData current;
-    private Integer statusCode = 0;
-    private boolean fromCache = true;
 
-    public WeatherDataAndResponseStatusDTO()
+    public ExtendedWeatherAndResponseStatusDTO()
     {
         super();
     }
-
-    public WeatherDataAndResponseStatusDTO( Integer statusCode)
+    public ExtendedWeatherAndResponseStatusDTO(Integer statusCode)
     {
-
-        this.statusCode = statusCode;
+        super(statusCode);
     }
 
-
-    public boolean ok() {
-        return statusCode == 200;
+    public ExtendedWeatherAndResponseStatusDTO(Integer statusCode, boolean fromCache)
+    {
+        super(statusCode);
+        setFromCache(fromCache);
     }
-
 
     public void addWeatherData(WeatherData data) {
         if (data != null) {

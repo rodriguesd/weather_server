@@ -1,11 +1,12 @@
 package com.stockheap.weather.service.weather;
 
-import com.stockheap.weather.service.external_weather.dto.WeatherDataAndResponseStatusDTO;
+import com.stockheap.weather.service.external_weather.dto.CurrentWeatherAndResponseStatusDTO;
+import com.stockheap.weather.service.external_weather.dto.ExtendedWeatherAndResponseStatusDTO;
 import reactor.core.publisher.Mono;
 
 public interface WeatherMethods {
 
-    Mono<WeatherDataAndResponseStatusDTO> getCurrentWeather(String zip, String country);
+    Mono<CurrentWeatherAndResponseStatusDTO> getCurrentWeather(String zip, String country);
 
-    Mono<WeatherDataAndResponseStatusDTO> getExtendedWeather(String zip, String country) ;
+    Mono<ExtendedWeatherAndResponseStatusDTO> getExtendedWeather(String zip, String country) ;
 }
