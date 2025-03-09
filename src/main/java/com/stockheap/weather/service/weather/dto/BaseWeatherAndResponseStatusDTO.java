@@ -1,4 +1,4 @@
-package com.stockheap.weather.service.external_weather.dto;
+package com.stockheap.weather.service.weather.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;

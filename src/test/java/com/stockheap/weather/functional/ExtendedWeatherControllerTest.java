@@ -1,14 +1,12 @@
 package com.stockheap.weather.functional;
 
 import com.stockheap.weather.controller.WeatherController;
-import com.stockheap.weather.controller.response.CurrentWeatherResponse;
 import com.stockheap.weather.controller.response.ExtendedWeatherResponse;
 import com.stockheap.weather.data.common.dto.WeatherData;
 import com.stockheap.weather.helpers.ResourceFileReaderSingleton;
 import com.stockheap.weather.helpers.TestDataUtils;
-import com.stockheap.weather.service.external_weather.common.ExternalWeatherMethods;
-import com.stockheap.weather.service.external_weather.dto.CurrentWeatherAndResponseStatusDTO;
-import com.stockheap.weather.service.external_weather.dto.ExtendedWeatherAndResponseStatusDTO;
+import com.stockheap.weather.service.common.ExternalWeatherMethods;
+import com.stockheap.weather.service.weather.dto.ExtendedWeatherAndResponseStatusDTO;
 import com.stockheap.weather.service.weather.WeatherMethods;
 import com.stockheap.weather.service.weather.WeatherMethodsImpl;
 import org.junit.jupiter.api.Test;
@@ -16,7 +14,6 @@ import org.junit.platform.commons.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
-import org.springframework.http.HttpStatus;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;

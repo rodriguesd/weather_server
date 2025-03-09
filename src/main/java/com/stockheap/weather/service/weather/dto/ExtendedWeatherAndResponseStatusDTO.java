@@ -1,4 +1,4 @@
-package com.stockheap.weather.service.external_weather.dto;
+package com.stockheap.weather.service.weather.dto;
 
 import com.stockheap.weather.data.common.dto.WeatherData;
 import lombok.Getter;
