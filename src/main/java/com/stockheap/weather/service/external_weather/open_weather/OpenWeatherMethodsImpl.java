@@ -316,23 +316,29 @@ public class OpenWeatherMethodsImpl implements ExternalWeatherMethods {
         try {
             JsonNode rootNode = MAPPER.readTree(jsonString);
 
-            String cod = rootNode.get("cod").asText();
-            String message = rootNode.get("message").asText();
-
-            if(StringUtils.isNotBlank(cod) && StringUtils.isNotBlank(message))
+            if(rootNode != null &&
+                    rootNode.get("cod") != null &&
+                    rootNode.get("message") != null)
             {
-                return new CodAndMessage(Integer.parseInt(cod), message);
+                String cod = rootNode.get("cod").asText();
+                String message = rootNode.get("message").asText();
+
+                if(StringUtils.isNotBlank(cod) && StringUtils.isNotBlank(message))
+                {
+                    return new CodAndMessage(Integer.parseInt(cod), message);
+                }
+
+                if(StringUtils.isNotBlank(cod) )
+                {
+                    return new CodAndMessage(Integer.parseInt(cod), "");
+                }
+
+                if(StringUtils.isNotBlank(message) )
+                {
+                    return new CodAndMessage(0, message);
+                }
             }
 
-            if(StringUtils.isNotBlank(cod) )
-            {
-                return new CodAndMessage(Integer.parseInt(cod), "");
-            }
-
-            if(StringUtils.isNotBlank(message) )
-            {
-                return new CodAndMessage(0, message);
-            }
 
         } catch (Exception e) {
                 e.printStackTrace();
