@@ -16,13 +16,8 @@ public class WeatherConstants {
         static {
             // North America
             COUNTRY_MAP.put("US","United States");
-            COUNTRY_MAP.put("CA","Canada");
-            COUNTRY_MAP.put("GB","United Kingdom");
             COUNTRY_MAP.put("DE","Germany");
-
             COUNTRY_MAP.put("MX","Mexico");
-            COUNTRY_MAP.put("PT","Portugal");
-
             COUNTRY_MAP.put("ES","Spain");
         }
 
