@@ -15,6 +15,7 @@ This is a maven project:
    mvn spring-boot:run
 
 This will start the server the which is running on port 8080
+The react client is hard coded to point to port 8080
 
 
 DESIGN
