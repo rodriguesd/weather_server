@@ -2,6 +2,7 @@ package com.stockheap.weather.service.external_weather.open_weather;
 
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.stockheap.weather.data.common.dto.WeatherDataDTO;
 import com.stockheap.weather.service.common.ExternalWeatherMethods;
@@ -28,6 +29,26 @@ import java.util.List;
 
 @Service
 public class OpenWeatherMethodsImpl implements ExternalWeatherMethods {
+
+
+    private class CodAndMessage
+    {
+        private int cod = 0;
+        private String message ="";
+
+        public CodAndMessage(int cod, String message) {
+            this.cod = cod;
+            this.message = message;
+        }
+
+        public int getCod() {
+            return cod;
+        }
+
+        public String getMessage() {
+            return message;
+        }
+    }
 
 
     @Autowired
@@ -108,7 +129,11 @@ public class OpenWeatherMethodsImpl implements ExternalWeatherMethods {
                             }
                         });
                     } else {
-                        return Mono.just(new OpenWeatherResponse(false, httpStatusCode.value()));
+                        return clientResponse.bodyToMono(String.class)
+                                .map(jsonString -> {
+
+                                    return new OpenWeatherResponse(false, HttpStatus.BAD_REQUEST.value(), jsonString);
+                                });
                     }
                 }).flatMap(openWeatherResponse -> {
                     return Mono.just(createWeatherDataAndResponseStatusDTO(zip, country, IMPERIAL, openWeatherResponse));
@@ -131,8 +156,13 @@ public class OpenWeatherMethodsImpl implements ExternalWeatherMethods {
                                         return new OpenExtendedWeatherResponse(false,  HttpStatus.NO_CONTENT.value());
                                     }
                                 });
-                    } else {
-                        return Mono.just(new OpenExtendedWeatherResponse(false, httpStatusCode.value()));
+                    }
+                    else {
+                        return clientResponse.bodyToMono(String.class)
+                                .map(jsonString -> {
+
+                                    return new OpenExtendedWeatherResponse(false,  HttpStatus.BAD_REQUEST.value(), jsonString);
+                                });
                     }
                 }).flatMap(openExtendedWeatherResponse -> {
                     return Mono.just(createWeatherDataAndResponseStatusDTO(zip, country, IMPERIAL, openExtendedWeatherResponse));
@@ -183,10 +213,28 @@ public class OpenWeatherMethodsImpl implements ExternalWeatherMethods {
             }
 
             weatherDataAndResponseStatusDTO.setStatusCode(openExtendedWeatherResponse.getCod());
-            if(openExtendedWeatherResponse.getCod() == 0)
+            if(openExtendedWeatherResponse.getCod() == 0 &&
+                    StringUtils.isBlank(openExtendedWeatherResponse.getMessage()))
             {
                 weatherDataAndResponseStatusDTO.setStatusCode(HttpStatus.NO_CONTENT.value());
             }
+            else {
+
+
+                CodAndMessage codAndMessage =   getCodAndMessage(openExtendedWeatherResponse.getMessage());
+                if(codAndMessage != null)
+                {
+                    if(codAndMessage.getCod() > 0)
+                    {
+                        weatherDataAndResponseStatusDTO.setStatusCode(codAndMessage.getCod());
+                    }
+                    if(StringUtils.isNotBlank(codAndMessage.getMessage()))
+                    {
+                        weatherDataAndResponseStatusDTO.setMessage(codAndMessage.getMessage());
+                    }
+                }
+            }
+
             weatherDataAndResponseStatusDTO.setFromCache(false);
         }
 
@@ -234,14 +282,64 @@ public class OpenWeatherMethodsImpl implements ExternalWeatherMethods {
                 weatherDataAndResponseStatusDTO.setMessage(openWeatherResponse.getMessage());
             }
             weatherDataAndResponseStatusDTO.setStatusCode(openWeatherResponse.getCod());
-            if(openWeatherResponse.getCod() == 0)
+            if(openWeatherResponse.getCod() == 0 && StringUtils.isBlank(openWeatherResponse.getMessage()))
             {
                 weatherDataAndResponseStatusDTO.setStatusCode(HttpStatus.NO_CONTENT.value());
             }
+            else {
+
+                CodAndMessage codAndMessage =   getCodAndMessage(openWeatherResponse.getMessage());
+                if(codAndMessage != null)
+                {
+                    if(codAndMessage.getCod() > 0)
+                    {
+                        weatherDataAndResponseStatusDTO.setStatusCode(codAndMessage.getCod());
+                    }
+                    if(StringUtils.isNotBlank(codAndMessage.getMessage()))
+                    {
+                        weatherDataAndResponseStatusDTO.setMessage(codAndMessage.getMessage());
+                    }
+                }
+            }
+
             weatherDataAndResponseStatusDTO.setFromCache(false);
         }
 
         return weatherDataAndResponseStatusDTO;
+    }
+
+
+
+    private CodAndMessage getCodAndMessage(String jsonString)
+    {
+
+        try {
+            JsonNode rootNode = MAPPER.readTree(jsonString);
+
+            String cod = rootNode.get("cod").asText();
+            String message = rootNode.get("message").asText();
+
+            if(StringUtils.isNotBlank(cod) && StringUtils.isNotBlank(message))
+            {
+                return new CodAndMessage(Integer.parseInt(cod), message);
+            }
+
+            if(StringUtils.isNotBlank(cod) )
+            {
+                return new CodAndMessage(Integer.parseInt(cod), "");
+            }
+
+            if(StringUtils.isNotBlank(message) )
+            {
+                return new CodAndMessage(0, message);
+            }
+
+        } catch (Exception e) {
+                e.printStackTrace();
+        }
+
+        return null;
+
     }
 
 

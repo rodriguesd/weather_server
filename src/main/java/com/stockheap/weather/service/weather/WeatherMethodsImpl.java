@@ -21,7 +21,7 @@ public class WeatherMethodsImpl implements WeatherMethods {
     private ExternalWeatherMethods externalWeatherMethods;
 
 
-    @Cacheable(unless = "#result == null or #result.statusCode != 200 or #result.current == null", value = WeatherConstants.CacheNames.WEATHER_FORECAST_CACHE, key = "'CACHE_ZIP_PREFIX_CURRENT_' + #zip + #country")
+    @Cacheable(unless = "#result == null or #result.statusCode != 200 or #result.current == null", value = WeatherConstants.CacheNames.WEATHER_FORECAST_CACHE, key = "'CACHE_ZIP_PREFIX_CURRENT_' + #zip.replace(' ','') + #country")
     public Mono<CurrentWeatherAndResponseStatusDTO> getCurrentWeather(String zip, String country) {
         if (isDataValid(zip, country)) {
             return Mono.fromCallable(() -> externalWeatherMethods.getCurrentWeather(zip.trim(), country))
@@ -32,7 +32,7 @@ public class WeatherMethodsImpl implements WeatherMethods {
 
     }
 
-    @Cacheable(unless = "#result == null or #result.statusCode != 200 or #result.extended == null or #result.extended.size() == 0", value = WeatherConstants.CacheNames.WEATHER_FORECAST_CACHE, key = "'CACHE_ZIP_PREFIX_EXT_' + #zip + #country")
+    @Cacheable(unless = "#result == null or #result.statusCode != 200 or #result.extended == null or #result.extended.size() == 0", value = WeatherConstants.CacheNames.WEATHER_FORECAST_CACHE, key = "'CACHE_ZIP_PREFIX_EXT_' + #zip.replace(' ','')  + #country")
     public Mono<ExtendedWeatherAndResponseStatusDTO> getExtendedWeather(String zip, String country) {
 
         if (isDataValid(zip, country)) {

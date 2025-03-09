@@ -38,8 +38,15 @@ public class OpenWeatherResponse {
         this.isValid = isValid;
         this.statusCode = statusCode;
 
+
     }
 
+    public OpenWeatherResponse(boolean isValid, long statusCode, String message) {
+        this.isValid = isValid;
+        this.statusCode = statusCode;
+        this.message =message;
+
+    }
     @JsonIgnore
     public boolean isValid() {
         return isValid;

@@ -62,10 +62,11 @@ public class WeatherController {
                     } else {
                         if(weatherDataAndResponseStatusDTO != null)
                         {
-                            return ResponseEntity.status(HttpStatus.resolve(weatherDataAndResponseStatusDTO.getStatusCode().intValue())).body(new CurrentWeatherResponse(weatherDataAndResponseStatusDTO.getCurrent(),
-                                   false, weatherDataAndResponseStatusDTO.getMessage()));
+                            CurrentWeatherResponse currentWeatherResponse =  new CurrentWeatherResponse(weatherDataAndResponseStatusDTO.getCurrent(),
+                                    false, weatherDataAndResponseStatusDTO.getMessage());
+                            return ResponseEntity.status(HttpStatus.resolve(weatherDataAndResponseStatusDTO.getStatusCode().intValue())).body(currentWeatherResponse);
                         }
-                        return ResponseEntity.status(HttpStatus.resolve(weatherDataAndResponseStatusDTO.getStatusCode().intValue())).body(new CurrentWeatherResponse());
+                        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new CurrentWeatherResponse());
                     }
                 })
                 .onErrorReturn(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new CurrentWeatherResponse()));
@@ -99,9 +100,9 @@ public class WeatherController {
                         if(weatherDataAndResponseStatusDTO != null)
                         {
                             ExtendedWeatherResponse extendedWeatherResponse = new ExtendedWeatherResponse(weatherDataAndResponseStatusDTO.getExtended(), false, weatherDataAndResponseStatusDTO.getMessage());
-                            return ResponseEntity.ok(extendedWeatherResponse);
+                            return ResponseEntity.status(HttpStatus.resolve(weatherDataAndResponseStatusDTO.getStatusCode().intValue())).body(extendedWeatherResponse);
                         }
-                        return ResponseEntity.status(HttpStatus.resolve(weatherDataAndResponseStatusDTO.getStatusCode().intValue())).body(new ExtendedWeatherResponse());
+                        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ExtendedWeatherResponse());
                     }
                 })
                 .onErrorReturn(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ExtendedWeatherResponse()));
