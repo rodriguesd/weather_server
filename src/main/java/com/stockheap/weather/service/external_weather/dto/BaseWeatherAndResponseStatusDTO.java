@@ -32,10 +32,6 @@ public class BaseWeatherAndResponseStatusDTO implements Serializable {
         return statusCode == 200;
     }
 
-    public boolean isFromCache()
-    {
-        return fromCache;
-    }
 
 
 
