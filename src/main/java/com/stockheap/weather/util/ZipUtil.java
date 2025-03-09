@@ -26,7 +26,7 @@ public class ZipUtil {
     }
 
     public static boolean isValidZipCode(String countryCode, String zipCode) {
-        String pattern = ZIP_CODES_PATTERNS.get(countryCode);
+        String pattern = ZIP_CODES_PATTERNS.get(countryCode.trim().toUpperCase());
         if (pattern == null) {
             return false; // Country code not supported
         }
@@ -39,9 +39,9 @@ public class ZipUtil {
     public static boolean validateZip(String countryCodes, String zip) {
 
         if (StringUtils.isNotBlank(countryCodes) && StringUtils.isNotBlank(countryCodes)) {
-            boolean ok = WeatherConstants.CountryCodes.isValidCode(countryCodes.toUpperCase());
+            boolean ok = WeatherConstants.CountryCodes.isValidCode(countryCodes.trim().toUpperCase());
             if (ok) {
-                return isValidZipCode(countryCodes.toUpperCase(), zip);
+                return isValidZipCode(countryCodes.trim().toUpperCase(), zip);
             }
         }
         return false;

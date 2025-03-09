@@ -67,8 +67,9 @@ public class OpenWeatherMethodsImpl implements ExternalWeatherMethods {
 
     private MultiValueMap<String, String> generateParams(String zip, String country) {
 
+        String upperCaseCountryCode =  country.toUpperCase();
         String zipCodeEncoded = URLEncoder.encode(zip, StandardCharsets.UTF_8);
-        String encodedCountry = URLEncoder.encode(country, StandardCharsets.UTF_8);
+        String encodedCountry = URLEncoder.encode(upperCaseCountryCode, StandardCharsets.UTF_8);
 
 
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
