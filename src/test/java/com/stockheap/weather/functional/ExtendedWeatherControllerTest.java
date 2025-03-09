@@ -1,0 +1,105 @@
+package com.stockheap.weather.functional;
+
+import com.stockheap.weather.controller.WeatherController;
+import com.stockheap.weather.controller.response.CurrentWeatherResponse;
+import com.stockheap.weather.controller.response.ExtendedWeatherResponse;
+import com.stockheap.weather.data.common.dto.WeatherData;
+import com.stockheap.weather.helpers.ResourceFileReaderSingleton;
+import com.stockheap.weather.helpers.TestDataUtils;
+import com.stockheap.weather.service.external_weather.common.ExternalWeatherMethods;
+import com.stockheap.weather.service.external_weather.dto.CurrentWeatherAndResponseStatusDTO;
+import com.stockheap.weather.service.external_weather.dto.ExtendedWeatherAndResponseStatusDTO;
+import com.stockheap.weather.service.weather.WeatherMethods;
+import com.stockheap.weather.service.weather.WeatherMethodsImpl;
+import org.junit.jupiter.api.Test;
+import org.junit.platform.commons.util.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.http.HttpStatus;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.ResultActions;
+import reactor.core.publisher.Mono;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+
+@WebMvcTest(WeatherController.class)
+@Import({WeatherMethodsImpl.class})
+class ExtendedWeatherControllerTest {
+
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @MockitoBean
+    private ExternalWeatherMethods externalWeatherMethods;
+
+    @Autowired
+    private WeatherMethods weatherMethods;
+
+
+    private Mono<ExtendedWeatherAndResponseStatusDTO> generateMono(String fileName, String zip,
+                                                                   String countryCode) throws Exception {
+
+
+        String ok200 = ResourceFileReaderSingleton.getInstance().readFile(fileName);
+        assertTrue(StringUtils.isNotBlank(ok200));
+        return TestDataUtils.createCurrentExt(ok200, zip, countryCode);
+
+
+    }
+
+
+    @Test
+    public void testCorrectData200() throws Exception {
+
+        String zip = "94121";
+        String countryCode = "US";
+        Mono<ExtendedWeatherAndResponseStatusDTO> mono = generateMono("open_weather_ex_200.json", zip, countryCode);
+
+        when(externalWeatherMethods.getExtendedWeather(zip, countryCode)).thenReturn(mono);
+        weatherMethods = new WeatherMethodsImpl(externalWeatherMethods);
+
+        String uri = "/weather/v1/extended/" + countryCode + "/" + zip;
+
+        ResultActions resultActions = mockMvc.perform(get(uri))
+                .andExpect(status().isOk());
+
+        MvcResult mvcResult = resultActions.andReturn();
+
+
+        org.springframework.http.ResponseEntity content = (org.springframework.http.ResponseEntity) mvcResult.getAsyncResult();
+        ExtendedWeatherResponse body = (ExtendedWeatherResponse) content.getBody();
+
+        System.out.println(body);
+
+
+        assertTrue(body != null);
+        assertTrue(body.getExtended() != null);
+        assertTrue(body.getExtended().size() > 0);
+        WeatherData weatherData =  body.getExtended().get(0);
+        assertTrue(weatherData != null);
+
+
+
+        assertTrue(weatherData.getDate().equals("2025-03-08 16:00:00"));
+
+        assertTrue(weatherData.getCurrentTemp() ==58.86f);
+        assertTrue(weatherData.getHighTemp() == 58.86f);
+        assertTrue(weatherData.getLowTemp() ==55.53f);
+        assertTrue(!body.isCached());
+
+
+
+    }
+
+
+
+}

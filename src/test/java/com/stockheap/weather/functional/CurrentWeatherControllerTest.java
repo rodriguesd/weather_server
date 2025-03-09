@@ -87,6 +87,7 @@ class CurrentWeatherControllerTest {
         assertTrue(body.getCurrent().getCurrentTemp() == 60.35f);
         assertTrue(body.getCurrent().getHighTemp() == 63.99f);
         assertTrue(body.getCurrent().getLowTemp() == 54.79f);
+        assertTrue(!body.isCached());
 
 
     }

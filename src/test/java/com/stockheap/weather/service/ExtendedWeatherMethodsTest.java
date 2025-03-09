@@ -3,6 +3,7 @@ package com.stockheap.weather.service;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.stockheap.weather.helpers.ResourceFileReaderSingleton;
+import com.stockheap.weather.helpers.TestDataUtils;
 import com.stockheap.weather.service.external_weather.common.ExternalWeatherMethods;
 import com.stockheap.weather.service.external_weather.dto.CurrentWeatherAndResponseStatusDTO;
 import com.stockheap.weather.service.external_weather.dto.ExtendedWeatherAndResponseStatusDTO;
@@ -47,7 +48,7 @@ public class ExtendedWeatherMethodsTest {
 
         assertTrue(StringUtils.isNotBlank(ok200));
 
-        Mono<ExtendedWeatherAndResponseStatusDTO> mono =     createCurrent(ok200, zip, countryCode);
+        Mono<ExtendedWeatherAndResponseStatusDTO> mono = TestDataUtils.createCurrentExt(ok200, zip, countryCode);
         when(externalWeatherMethods.getExtendedWeather(zip,countryCode )).thenReturn(mono);
 
         WeatherMethods weatherMethods = new WeatherMethodsImpl(externalWeatherMethods);
@@ -70,16 +71,5 @@ public class ExtendedWeatherMethodsTest {
 
 
 
-    private  Mono<ExtendedWeatherAndResponseStatusDTO> createCurrent(String data, String zip, String countryCode) throws Exception
-    {
-        OpenExtendedWeatherResponse openWeatherResponse = MAPPER.readValue(data, OpenExtendedWeatherResponse.class);
-        assertTrue(openWeatherResponse != null);
-        OpenWeatherMethodsImpl weatherMethods  = new OpenWeatherMethodsImpl();
-        ExtendedWeatherAndResponseStatusDTO currentWeatherAndResponseStatusDTO =  weatherMethods.createWeatherDataAndResponseStatusDTO(zip,
-                countryCode,
-                "imperial",
-                openWeatherResponse);
-        return Mono.just(currentWeatherAndResponseStatusDTO);
-    }
 
 }
