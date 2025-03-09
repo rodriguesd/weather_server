@@ -100,7 +100,7 @@ public class SpringConfiguration implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         // Allow requests from localhost:3000 to all endpoints
         registry.addMapping("/**")
-                .allowedOrigins("http://localhost:3000,http://localhost:8080,http://127.0.0.1:3000") // You can specify multiple origins if needed
+                .allowedOrigins("http://localhost:3000,http://localhost:8080,http://127.0.0.1:3000,http://127.0.0.1:8080") // You can specify multiple origins if needed
                 .allowedMethods("GET", "POST", "PUT", "DELETE") // Allow specific HTTP methods
                 .allowedHeaders("*") // Allow all headers
                 .allowCredentials(true); // Allow credentials (cookies, authorization headers, etc.)
