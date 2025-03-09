@@ -28,7 +28,10 @@ import reactor.netty.http.client.HttpClient;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
-
+import springfox.documentation.builders.PathSelectors;
+import springfox.documentation.builders.RequestHandlerSelectors;
+import springfox.documentation.spi.DocumentationType;
+import springfox.documentation.spring.web.plugins.Docket;
 
 
 
@@ -64,6 +67,16 @@ public class SpringConfiguration {
     @Value("${web.client.write.seconds.timeout}")
     private int webClientWriteSecondsTimeout;
 
+
+
+    @Bean
+    public Docket api() {
+        return new Docket(DocumentationType.SWAGGER_2)
+                .select()
+                .apis(RequestHandlerSelectors.basePackage("com.stockheap.weather.controller"))
+                .paths(PathSelectors.any())
+                .build();
+    }
 
 
 
