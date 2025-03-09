@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.stockheap.weather.data.common.dto.WeatherDataDTO;
 import com.stockheap.weather.service.common.ExternalWeatherMethods;
+import com.stockheap.weather.service.weather.dto.BaseWeatherAndResponseStatusDTO;
 import com.stockheap.weather.service.weather.dto.CurrentWeatherAndResponseStatusDTO;
 import com.stockheap.weather.service.weather.dto.ExtendedWeatherAndResponseStatusDTO;
 import com.stockheap.weather.service.external_weather.open_weather.response_data.*;
@@ -175,9 +176,6 @@ public class OpenWeatherMethodsImpl implements ExternalWeatherMethods {
                                                                                      String units,
                                                                                      OpenExtendedWeatherResponse openExtendedWeatherResponse) {
         ExtendedWeatherAndResponseStatusDTO weatherDataAndResponseStatusDTO = new ExtendedWeatherAndResponseStatusDTO();
-        weatherDataAndResponseStatusDTO.setZip(zip);
-        weatherDataAndResponseStatusDTO.setCountryCode(country);
-        weatherDataAndResponseStatusDTO.setFromCache(false);
         long timeZone = 0;
         if (openExtendedWeatherResponse != null &&
                 openExtendedWeatherResponse.getCity() != null) {
@@ -205,38 +203,19 @@ public class OpenWeatherMethodsImpl implements ExternalWeatherMethods {
             }
         }
 
-        if (openExtendedWeatherResponse != null) {
+        String message = "";
+        int cod =0;
 
-            if(StringUtils.isNotBlank(openExtendedWeatherResponse.getMessage()))
-            {
-                weatherDataAndResponseStatusDTO.setMessage(openExtendedWeatherResponse.getMessage());
-            }
-
-            weatherDataAndResponseStatusDTO.setStatusCode(openExtendedWeatherResponse.getCod());
-            if(openExtendedWeatherResponse.getCod() == 0 &&
-                    StringUtils.isBlank(openExtendedWeatherResponse.getMessage()))
-            {
-                weatherDataAndResponseStatusDTO.setStatusCode(HttpStatus.NO_CONTENT.value());
-            }
-            else {
-
-
-                CodAndMessage codAndMessage =   getCodAndMessage(openExtendedWeatherResponse.getMessage());
-                if(codAndMessage != null)
-                {
-                    if(codAndMessage.getCod() > 0)
-                    {
-                        weatherDataAndResponseStatusDTO.setStatusCode(codAndMessage.getCod());
-                    }
-                    if(StringUtils.isNotBlank(codAndMessage.getMessage()))
-                    {
-                        weatherDataAndResponseStatusDTO.setMessage(codAndMessage.getMessage());
-                    }
-                }
-            }
-
-            weatherDataAndResponseStatusDTO.setFromCache(false);
+        if(openExtendedWeatherResponse != null)
+        {
+            message = openExtendedWeatherResponse.getMessage();
+            cod = openExtendedWeatherResponse.getCod();
         }
+        initBaseWeatherAndResponseStatusDTO(zip,
+                country,
+                message,
+                cod,
+                weatherDataAndResponseStatusDTO);
 
         return weatherDataAndResponseStatusDTO;
 
@@ -257,14 +236,50 @@ public class OpenWeatherMethodsImpl implements ExternalWeatherMethods {
     }
 
 
+    public void initBaseWeatherAndResponseStatusDTO(String zip,
+                                                    String country,
+                                                    String message,
+                                                    int cod,
+                                                    BaseWeatherAndResponseStatusDTO baseWeatherAndResponseStatusDTO)
+    {
+        baseWeatherAndResponseStatusDTO.setZip(zip);
+        baseWeatherAndResponseStatusDTO.setCountryCode(country);
+        baseWeatherAndResponseStatusDTO.setFromCache(false);
+
+        if(StringUtils.isNotBlank(message))
+        {
+            baseWeatherAndResponseStatusDTO.setMessage(message);
+        }
+        baseWeatherAndResponseStatusDTO.setStatusCode(cod);
+        if(cod == 0 && StringUtils.isBlank(message))
+        {
+            baseWeatherAndResponseStatusDTO.setStatusCode(HttpStatus.NO_CONTENT.value());
+        }
+        else {
+
+            CodAndMessage codAndMessage =   getCodAndMessage(message);
+            if(codAndMessage != null)
+            {
+                if(codAndMessage.getCod() > 0)
+                {
+                    baseWeatherAndResponseStatusDTO.setStatusCode(codAndMessage.getCod());
+                }
+                if(StringUtils.isNotBlank(codAndMessage.getMessage()))
+                {
+                    baseWeatherAndResponseStatusDTO.setMessage(codAndMessage.getMessage());
+                }
+            }
+        }
+
+        baseWeatherAndResponseStatusDTO.setFromCache(false);
+    }
+
+
     public CurrentWeatherAndResponseStatusDTO createWeatherDataAndResponseStatusDTO(String zip,
-                                                                                     String country,
-                                                                                     String units,
-                                                                                     OpenWeatherResponse openWeatherResponse) {
+                                                                                    String country,
+                                                                                    String units,
+                                                                                    OpenWeatherResponse openWeatherResponse) {
         CurrentWeatherAndResponseStatusDTO weatherDataAndResponseStatusDTO = new CurrentWeatherAndResponseStatusDTO();
-        weatherDataAndResponseStatusDTO.setZip(zip);
-        weatherDataAndResponseStatusDTO.setCountryCode(country);
-        weatherDataAndResponseStatusDTO.setFromCache(false);
         if (openWeatherResponse.isValid() && openWeatherResponse.getCod() == HttpStatus.OK.value()) {
 
             if (openWeatherResponse.getMain() != null) {
@@ -275,35 +290,14 @@ public class OpenWeatherMethodsImpl implements ExternalWeatherMethods {
                 }
             }
         }
-        if (openWeatherResponse != null) {
 
-            if(StringUtils.isNotBlank(openWeatherResponse.getMessage()))
-            {
-                weatherDataAndResponseStatusDTO.setMessage(openWeatherResponse.getMessage());
-            }
-            weatherDataAndResponseStatusDTO.setStatusCode(openWeatherResponse.getCod());
-            if(openWeatherResponse.getCod() == 0 && StringUtils.isBlank(openWeatherResponse.getMessage()))
-            {
-                weatherDataAndResponseStatusDTO.setStatusCode(HttpStatus.NO_CONTENT.value());
-            }
-            else {
-
-                CodAndMessage codAndMessage =   getCodAndMessage(openWeatherResponse.getMessage());
-                if(codAndMessage != null)
-                {
-                    if(codAndMessage.getCod() > 0)
-                    {
-                        weatherDataAndResponseStatusDTO.setStatusCode(codAndMessage.getCod());
-                    }
-                    if(StringUtils.isNotBlank(codAndMessage.getMessage()))
-                    {
-                        weatherDataAndResponseStatusDTO.setMessage(codAndMessage.getMessage());
-                    }
-                }
-            }
-
-            weatherDataAndResponseStatusDTO.setFromCache(false);
-        }
+        String message = openWeatherResponse.getMessage();
+        int cod = openWeatherResponse.getCod();
+        initBaseWeatherAndResponseStatusDTO(zip,
+                country,
+                message,
+                cod,
+                weatherDataAndResponseStatusDTO);
 
         return weatherDataAndResponseStatusDTO;
     }
