@@ -14,6 +14,8 @@ This is a maven project:
 3. To start the app server run 
    mvn spring-boot:run
 
+This will start the server the which is running on port 8080
+
 
 DESIGN
 This is included in the root of the project in the "design" directory
