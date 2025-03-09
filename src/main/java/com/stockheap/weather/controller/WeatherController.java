@@ -1,8 +1,8 @@
-package com.stockheap.weather.controller.rest;
+package com.stockheap.weather.controller;
 
 
-import com.stockheap.weather.controller.rest.response.CurrentWeatherResponse;
-import com.stockheap.weather.controller.rest.response.ExtendedWeatherResponse;
+import com.stockheap.weather.controller.response.CurrentWeatherResponse;
+import com.stockheap.weather.controller.response.ExtendedWeatherResponse;
 import com.stockheap.weather.service.weather.WeatherMethods;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -57,13 +57,13 @@ public class WeatherController {
                 .map(weatherDataAndResponseStatusDTO -> {
                     if (weatherDataAndResponseStatusDTO != null && weatherDataAndResponseStatusDTO.ok()) {
                         CurrentWeatherResponse currentWeatherResponse = new CurrentWeatherResponse(weatherDataAndResponseStatusDTO.getCurrent(),
-                                                weatherDataAndResponseStatusDTO.isFromCache(), weatherDataAndResponseStatusDTO.getMessage());
+                                                weatherDataAndResponseStatusDTO.isFromCache(), weatherDataAndResponseStatusDTO.getMessage(), weatherDataAndResponseStatusDTO.getCity());
                         return ResponseEntity.ok(currentWeatherResponse);
                     } else {
                         if(weatherDataAndResponseStatusDTO != null)
                         {
                             CurrentWeatherResponse currentWeatherResponse =  new CurrentWeatherResponse(weatherDataAndResponseStatusDTO.getCurrent(),
-                                    false, weatherDataAndResponseStatusDTO.getMessage());
+                                    false, weatherDataAndResponseStatusDTO.getMessage(), weatherDataAndResponseStatusDTO.getCity());
                             return ResponseEntity.status(HttpStatus.resolve(weatherDataAndResponseStatusDTO.getStatusCode().intValue())).body(currentWeatherResponse);
                         }
                         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new CurrentWeatherResponse());
@@ -94,12 +94,12 @@ public class WeatherController {
         return weatherMethods.getExtendedWeather(zip, countryCode)
                 .map(weatherDataAndResponseStatusDTO -> {
                     if (weatherDataAndResponseStatusDTO != null && weatherDataAndResponseStatusDTO.ok()) {
-                        ExtendedWeatherResponse extendedWeatherResponse = new ExtendedWeatherResponse(weatherDataAndResponseStatusDTO.getExtended(), weatherDataAndResponseStatusDTO.isFromCache(), weatherDataAndResponseStatusDTO.getMessage());
+                        ExtendedWeatherResponse extendedWeatherResponse = new ExtendedWeatherResponse(weatherDataAndResponseStatusDTO.getExtended(), weatherDataAndResponseStatusDTO.isFromCache(), weatherDataAndResponseStatusDTO.getMessage(), weatherDataAndResponseStatusDTO.getCity());
                         return ResponseEntity.ok(extendedWeatherResponse);
                     } else {
                         if(weatherDataAndResponseStatusDTO != null)
                         {
-                            ExtendedWeatherResponse extendedWeatherResponse = new ExtendedWeatherResponse(weatherDataAndResponseStatusDTO.getExtended(), false, weatherDataAndResponseStatusDTO.getMessage());
+                            ExtendedWeatherResponse extendedWeatherResponse = new ExtendedWeatherResponse(weatherDataAndResponseStatusDTO.getExtended(), false, weatherDataAndResponseStatusDTO.getMessage(), weatherDataAndResponseStatusDTO.getCity());
                             return ResponseEntity.status(HttpStatus.resolve(weatherDataAndResponseStatusDTO.getStatusCode().intValue())).body(extendedWeatherResponse);
                         }
                         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ExtendedWeatherResponse());

@@ -1,7 +1,7 @@
 package com.stockheap.weather.functional;
 import com.stockheap.weather.WeatherConstants;
-import com.stockheap.weather.controller.rest.response.CurrentWeatherResponse;
-import com.stockheap.weather.controller.rest.response.ExtendedWeatherResponse;
+import com.stockheap.weather.controller.response.CurrentWeatherResponse;
+import com.stockheap.weather.controller.response.ExtendedWeatherResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

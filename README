@@ -8,6 +8,8 @@ This is a maven project:
 
 2. in the docker directory which is in the root run
    docker compose up (this starts redis)
+   
+   /weather/docker
 
 3. To start the app server run 
    mvn spring-boot:run
@@ -18,5 +20,6 @@ unit tests are in the test directory its a standard java spring boot project
 
 
 DIRECTORY STRUCTURE
-
+config => This contains the spring boot configuration @Configuration
+controller => contains the rest controllers and the responses
 

@@ -206,16 +206,22 @@ public class OpenWeatherMethodsImpl implements ExternalWeatherMethods {
 
         String message = "";
         int cod =0;
+        String city ="";
 
         if(openExtendedWeatherResponse != null)
         {
             message = openExtendedWeatherResponse.getMessage();
             cod = openExtendedWeatherResponse.getCod();
+            if(openExtendedWeatherResponse.getCity() != null)
+            {
+                city = openExtendedWeatherResponse.getCity().getName();
+            }
         }
         initBaseWeatherAndResponseStatusDTO(zip,
                 country,
                 message,
                 cod,
+                city,
                 weatherDataAndResponseStatusDTO);
 
         return weatherDataAndResponseStatusDTO;
@@ -241,11 +247,13 @@ public class OpenWeatherMethodsImpl implements ExternalWeatherMethods {
                                                     String country,
                                                     String message,
                                                     int cod,
+                                                    String city,
                                                     BaseWeatherAndResponseStatusDTO baseWeatherAndResponseStatusDTO)
     {
         baseWeatherAndResponseStatusDTO.setZip(zip);
         baseWeatherAndResponseStatusDTO.setCountryCode(country);
         baseWeatherAndResponseStatusDTO.setFromCache(false);
+        baseWeatherAndResponseStatusDTO.setCity(city);
 
         if(StringUtils.isNotBlank(message))
         {
@@ -298,6 +306,7 @@ public class OpenWeatherMethodsImpl implements ExternalWeatherMethods {
                 country,
                 message,
                 cod,
+                openWeatherResponse.getName(),
                 weatherDataAndResponseStatusDTO);
 
         return weatherDataAndResponseStatusDTO;

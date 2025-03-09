@@ -17,6 +17,7 @@ public class BaseWeatherAndResponseStatusDTO implements Serializable {
     @JsonIgnore
     private transient boolean fromCache = true;
     private String message;
+    private String city;
 
     public BaseWeatherAndResponseStatusDTO()
     {
