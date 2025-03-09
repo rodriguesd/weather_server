@@ -1,5 +1,6 @@
 package com.stockheap.weather.functional;
 
+import com.stockheap.weather.WeatherConstants;
 import com.stockheap.weather.controller.rest.WeatherController;
 
 import com.stockheap.weather.controller.rest.response.CurrentWeatherResponse;
@@ -9,6 +10,7 @@ import com.stockheap.weather.service.common.ExternalWeatherMethods;
 import com.stockheap.weather.service.weather.dto.CurrentWeatherAndResponseStatusDTO;
 import com.stockheap.weather.service.weather.WeatherMethods;
 import com.stockheap.weather.service.weather.WeatherMethodsImpl;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.commons.util.StringUtils;
 
@@ -20,6 +22,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -47,6 +51,18 @@ class CurrentWeatherControllerTest {
     @Autowired
     private WeatherMethods weatherMethods;
 
+    @Autowired
+    private CacheManager cacheManager;
+
+    @BeforeEach
+    public void flushCache()
+    {
+
+        Cache cache = cacheManager.getCache(WeatherConstants.CacheNames.WEATHER_FORECAST_CACHE);
+        if (cache != null) {
+            cache.clear();
+        }
+    }
 
     private Mono<CurrentWeatherAndResponseStatusDTO> generateMono(String fileName, String zip,
                                                                   String countryCode) throws Exception {

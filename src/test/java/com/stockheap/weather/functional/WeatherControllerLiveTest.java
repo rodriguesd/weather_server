@@ -1,10 +1,14 @@
 package com.stockheap.weather.functional;
+import com.stockheap.weather.WeatherConstants;
 import com.stockheap.weather.controller.rest.response.CurrentWeatherResponse;
 import com.stockheap.weather.controller.rest.response.ExtendedWeatherResponse;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.http.ResponseEntity;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -16,6 +20,18 @@ public class WeatherControllerLiveTest {
     @Autowired
     private TestRestTemplate restTemplate;
 
+    @Autowired
+    private CacheManager cacheManager;
+
+    @BeforeEach
+    public void flushCache()
+    {
+
+        Cache cache = cacheManager.getCache(WeatherConstants.CacheNames.WEATHER_FORECAST_CACHE);
+        if (cache != null) {
+            cache.clear();
+        }
+    }
 
 
     @Test

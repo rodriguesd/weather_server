@@ -1,6 +1,7 @@
 package com.stockheap.weather.service;
 
 
+import com.stockheap.weather.WeatherConstants;
 import com.stockheap.weather.helpers.ResourceFileReaderSingleton;
 import com.stockheap.weather.helpers.TestDataUtils;
 import com.stockheap.weather.service.common.ExternalWeatherMethods;
@@ -8,14 +9,18 @@ import com.stockheap.weather.service.weather.dto.CurrentWeatherAndResponseStatus
 import com.stockheap.weather.service.external_weather.open_weather.OpenWeatherMethodsImpl;
 import com.stockheap.weather.service.weather.WeatherMethods;
 import com.stockheap.weather.service.weather.WeatherMethodsImpl;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.commons.util.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.mockito.Mockito;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.http.HttpStatus;
 import reactor.core.publisher.Mono;
 
@@ -24,6 +29,20 @@ import static org.mockito.Mockito.*;
 
 @SpringBootTest
 public class CurrentWeatherMethodsTest {
+
+
+    @Autowired
+    private CacheManager cacheManager;
+
+    @BeforeEach
+    public void flushCache()
+    {
+
+        Cache cache = cacheManager.getCache(WeatherConstants.CacheNames.WEATHER_FORECAST_CACHE);
+        if (cache != null) {
+            cache.clear();
+        }
+    }
 
 
 

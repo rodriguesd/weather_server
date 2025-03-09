@@ -1,5 +1,6 @@
 package com.stockheap.weather.functional;
 
+import com.stockheap.weather.WeatherConstants;
 import com.stockheap.weather.controller.rest.WeatherController;
 import com.stockheap.weather.controller.rest.response.ExtendedWeatherResponse;
 import com.stockheap.weather.data.common.dto.WeatherDataDTO;
@@ -9,10 +10,13 @@ import com.stockheap.weather.service.common.ExternalWeatherMethods;
 import com.stockheap.weather.service.weather.dto.ExtendedWeatherAndResponseStatusDTO;
 import com.stockheap.weather.service.weather.WeatherMethods;
 import com.stockheap.weather.service.weather.WeatherMethodsImpl;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.commons.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -40,6 +44,21 @@ class ExtendedWeatherControllerTest {
 
     @Autowired
     private WeatherMethods weatherMethods;
+
+
+    @Autowired
+    private CacheManager cacheManager;
+
+    @BeforeEach
+    public void flushCache()
+    {
+
+        Cache cache = cacheManager.getCache(WeatherConstants.CacheNames.WEATHER_FORECAST_CACHE);
+        if (cache != null) {
+            cache.clear();
+        }
+    }
+
 
 
     private Mono<ExtendedWeatherAndResponseStatusDTO> generateMono(String fileName, String zip,

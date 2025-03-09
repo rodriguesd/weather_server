@@ -2,6 +2,7 @@ package com.stockheap.weather.service;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.stockheap.weather.WeatherConstants;
 import com.stockheap.weather.helpers.ResourceFileReaderSingleton;
 import com.stockheap.weather.helpers.TestDataUtils;
 import com.stockheap.weather.service.common.ExternalWeatherMethods;
@@ -10,10 +11,14 @@ import com.stockheap.weather.service.external_weather.open_weather.OpenWeatherMe
 import com.stockheap.weather.service.weather.WeatherMethods;
 import com.stockheap.weather.service.weather.WeatherMethodsImpl;
 import jakarta.annotation.PostConstruct;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.commons.util.StringUtils;
 import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import reactor.core.publisher.Mono;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -29,6 +34,20 @@ public class ExtendedWeatherMethodsTest {
     @PostConstruct
     private void init() {
         MAPPER.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    }
+
+
+    @Autowired
+    private CacheManager cacheManager;
+
+    @BeforeEach
+    public void flushCache()
+    {
+
+        Cache cache = cacheManager.getCache(WeatherConstants.CacheNames.WEATHER_FORECAST_CACHE);
+        if (cache != null) {
+            cache.clear();
+        }
     }
 
 
