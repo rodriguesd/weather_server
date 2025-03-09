@@ -5,7 +5,7 @@ import lombok.Data;
 import java.io.Serializable;
 
 @Data
-public class WeatherData implements Serializable {
+public class WeatherDataDTO implements Serializable {
 
     private String  date;
     private float currentTemp;

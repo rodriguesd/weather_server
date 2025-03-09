@@ -3,7 +3,7 @@ package com.stockheap.weather.service.external_weather.open_weather;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.stockheap.weather.data.common.dto.WeatherData;
+import com.stockheap.weather.data.common.dto.WeatherDataDTO;
 import com.stockheap.weather.service.common.ExternalWeatherMethods;
 import com.stockheap.weather.service.weather.dto.CurrentWeatherAndResponseStatusDTO;
 import com.stockheap.weather.service.weather.dto.ExtendedWeatherAndResponseStatusDTO;
@@ -165,10 +165,10 @@ public class OpenWeatherMethodsImpl implements ExternalWeatherMethods {
                 for (MainAndDateTime openWeatherResponse : openExtendedWeatherResponse.getList()) {
                     if (openWeatherResponse != null &&
                             openWeatherResponse.getMain() != null) {
-                        WeatherData weatherData = createWeatherData(openWeatherResponse.getMain(),
+                        WeatherDataDTO weatherDataDTO = createWeatherData(openWeatherResponse.getMain(),
                                 units, openWeatherResponse.getDt(), timeZone);
-                        if (weatherData != null) {
-                            weatherDataAndResponseStatusDTO.addWeatherData(weatherData);
+                        if (weatherDataDTO != null) {
+                            weatherDataAndResponseStatusDTO.addWeatherData(weatherDataDTO);
                         }
                     }
                 }
@@ -194,15 +194,15 @@ public class OpenWeatherMethodsImpl implements ExternalWeatherMethods {
 
     }
 
-    private WeatherData createWeatherData(Main main, String units, Long epochInSeconds, Long timeZone) {
+    private WeatherDataDTO createWeatherData(Main main, String units, Long epochInSeconds, Long timeZone) {
         if (main != null) {
-            WeatherData weatherData = new WeatherData();
-            weatherData.setHighTemp(main.getTempMax());
-            weatherData.setLowTemp(main.getTempMin());
-            weatherData.setUnits(units);
-            weatherData.setDate(DateUtil.convertToLocalTime(epochInSeconds, timeZone));
-            weatherData.setCurrentTemp(main.getTemp());
-            return weatherData;
+            WeatherDataDTO weatherDataDTO = new WeatherDataDTO();
+            weatherDataDTO.setHighTemp(main.getTempMax());
+            weatherDataDTO.setLowTemp(main.getTempMin());
+            weatherDataDTO.setUnits(units);
+            weatherDataDTO.setDate(DateUtil.convertToLocalTime(epochInSeconds, timeZone));
+            weatherDataDTO.setCurrentTemp(main.getTemp());
+            return weatherDataDTO;
         }
         return null;
 
@@ -220,10 +220,10 @@ public class OpenWeatherMethodsImpl implements ExternalWeatherMethods {
         if (openWeatherResponse.isValid() && openWeatherResponse.getCod() == HttpStatus.OK.value()) {
 
             if (openWeatherResponse.getMain() != null) {
-                WeatherData weatherData = createWeatherData(openWeatherResponse.getMain(),
+                WeatherDataDTO weatherDataDTO = createWeatherData(openWeatherResponse.getMain(),
                         units, openWeatherResponse.getDt(), openWeatherResponse.getTimezone());
-                if (weatherData != null) {
-                    weatherDataAndResponseStatusDTO.setCurrent(weatherData);
+                if (weatherDataDTO != null) {
+                    weatherDataAndResponseStatusDTO.setCurrent(weatherDataDTO);
                 }
             }
         }

@@ -2,7 +2,7 @@ package com.stockheap.weather.functional;
 
 import com.stockheap.weather.controller.WeatherController;
 import com.stockheap.weather.controller.response.ExtendedWeatherResponse;
-import com.stockheap.weather.data.common.dto.WeatherData;
+import com.stockheap.weather.data.common.dto.WeatherDataDTO;
 import com.stockheap.weather.helpers.ResourceFileReaderSingleton;
 import com.stockheap.weather.helpers.TestDataUtils;
 import com.stockheap.weather.service.common.ExternalWeatherMethods;
@@ -81,16 +81,16 @@ class ExtendedWeatherControllerTest {
         assertTrue(body != null);
         assertTrue(body.getExtended() != null);
         assertTrue(body.getExtended().size() > 0);
-        WeatherData weatherData =  body.getExtended().get(0);
-        assertTrue(weatherData != null);
+        WeatherDataDTO weatherDataDTO =  body.getExtended().get(0);
+        assertTrue(weatherDataDTO != null);
 
 
 
-        assertTrue(weatherData.getDate().equals("2025-03-08 16:00:00"));
+        assertTrue(weatherDataDTO.getDate().equals("2025-03-08 16:00:00"));
 
-        assertTrue(weatherData.getCurrentTemp() ==58.86f);
-        assertTrue(weatherData.getHighTemp() == 58.86f);
-        assertTrue(weatherData.getLowTemp() ==55.53f);
+        assertTrue(weatherDataDTO.getCurrentTemp() ==58.86f);
+        assertTrue(weatherDataDTO.getHighTemp() == 58.86f);
+        assertTrue(weatherDataDTO.getLowTemp() ==55.53f);
         assertTrue(!body.isCached());
 
 

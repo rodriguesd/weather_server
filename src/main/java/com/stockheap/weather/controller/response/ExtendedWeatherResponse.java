@@ -1,6 +1,6 @@
 package com.stockheap.weather.controller.response;
 
-import com.stockheap.weather.data.common.dto.WeatherData;
+import com.stockheap.weather.data.common.dto.WeatherDataDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,7 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 public class ExtendedWeatherResponse implements Serializable {
 
-    private List<WeatherData> extended = new ArrayList<>();
+    private List<WeatherDataDTO> extended = new ArrayList<>();
     private boolean cached;
     private String message;
 

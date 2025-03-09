@@ -1,6 +1,6 @@
 package com.stockheap.weather.service.weather.dto;
 
-import com.stockheap.weather.data.common.dto.WeatherData;
+import com.stockheap.weather.data.common.dto.WeatherDataDTO;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,7 +10,7 @@ import lombok.Setter;
 public class CurrentWeatherAndResponseStatusDTO extends BaseWeatherAndResponseStatusDTO{
 
 
-    private WeatherData current;
+    private WeatherDataDTO current;
 
     public CurrentWeatherAndResponseStatusDTO()
     {

@@ -1,6 +1,6 @@
 package com.stockheap.weather.service.weather.dto;
 
-import com.stockheap.weather.data.common.dto.WeatherData;
+import com.stockheap.weather.data.common.dto.WeatherDataDTO;
 import lombok.Getter;
 import lombok.Setter;
 import java.util.ArrayList;
@@ -10,7 +10,7 @@ import java.util.List;
 @Setter
 public class ExtendedWeatherAndResponseStatusDTO extends BaseWeatherAndResponseStatusDTO {
 
-    private List<WeatherData> extended = new ArrayList<>();
+    private List<WeatherDataDTO> extended = new ArrayList<>();
 
     public ExtendedWeatherAndResponseStatusDTO()
     {
@@ -28,7 +28,7 @@ public class ExtendedWeatherAndResponseStatusDTO extends BaseWeatherAndResponseS
         setMessage(message);
     }
 
-    public void addWeatherData(WeatherData data) {
+    public void addWeatherData(WeatherDataDTO data) {
         if (data != null) {
             if (extended == null) {
                 extended = new ArrayList<>();
@@ -37,7 +37,7 @@ public class ExtendedWeatherAndResponseStatusDTO extends BaseWeatherAndResponseS
         }
     }
 
-    public void addWeatherData(List<WeatherData> data) {
+    public void addWeatherData(List<WeatherDataDTO> data) {
         if (data != null &&
                 data.size() > 0) {
             if (extended == null) {
