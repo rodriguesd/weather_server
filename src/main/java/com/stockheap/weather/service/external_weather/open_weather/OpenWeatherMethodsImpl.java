@@ -1,6 +1,7 @@
 package com.stockheap.weather.service.external_weather.open_weather;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -303,11 +304,28 @@ public class OpenWeatherMethodsImpl implements ExternalWeatherMethods {
     }
 
 
+    private static boolean isValidJson(String jsonString) {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.readTree(jsonString);
+            return true;
+        } catch (JsonProcessingException e) {
+            return false;
+        }
+    }
+
 
     private CodAndMessage getCodAndMessage(String jsonString)
     {
 
         try {
+
+            if(!isValidJson(jsonString))
+            {
+                return null;
+            }
+
+
             JsonNode rootNode = MAPPER.readTree(jsonString);
 
             if(rootNode != null &&
