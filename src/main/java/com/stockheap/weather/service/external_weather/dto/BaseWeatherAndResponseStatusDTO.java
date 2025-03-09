@@ -1,5 +1,6 @@
 package com.stockheap.weather.service.external_weather.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,7 +14,8 @@ public class BaseWeatherAndResponseStatusDTO implements Serializable {
     private String zip;
     private String countryCode;
     private Integer statusCode = 0;
-    private boolean fromCache = true;
+    @JsonIgnore
+    private transient boolean fromCache = true;
     private String message;
 
     public BaseWeatherAndResponseStatusDTO()
