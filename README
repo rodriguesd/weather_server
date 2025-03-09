@@ -1,0 +1,11 @@
+To run the application it should start on port 8080
+
+This is a maven project:
+
+1. run mvn clean validate compile (in the root)
+
+2. in the docker directory which is in the root run
+docker compose up (this starts redis)
+
+3. To start the app server run 
+mvn spring-boot:run
