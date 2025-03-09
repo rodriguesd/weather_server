@@ -53,7 +53,7 @@ public class SpringConfiguration implements WebMvcConfigurer {
     @Value("${spring.redis.port}")
     private int redisPort;
 
-    @Value("${open.weather.expire.time.in.seconds}")
+    @Value("${weather.expire.time.in.seconds}")
     private long cacheExpireTimeInSeconds;
 
 

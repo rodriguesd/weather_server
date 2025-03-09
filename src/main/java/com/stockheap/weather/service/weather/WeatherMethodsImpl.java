@@ -21,6 +21,16 @@ public class WeatherMethodsImpl implements WeatherMethods {
     private ExternalWeatherMethods externalWeatherMethods;
 
 
+    /**
+     * <p>
+     *  This methods is used to get the current weather and will cache the result for a number of configured seconds
+     *  the configuration parameter name is weather.expire.time.in.seconds
+     * </p>
+     * @param zip zip code/postal code
+     * @param country this is the ios 3306 2 character representation (example: US (United States),MX (Mexico))
+     * @return current weather, city, country, status, zip and error message
+     */
+
     @Cacheable(unless = "#result == null or #result.statusCode != 200 or #result.current == null", value = WeatherConstants.CacheNames.WEATHER_FORECAST_CACHE, key = "'CACHE_ZIP_PREFIX_CURRENT_' + #zip.replace(' ','') + #country")
     public Mono<CurrentWeatherAndResponseStatusDTO> getCurrentWeather(String zip, String country) {
         if (isDataValid(zip, country)) {
@@ -31,6 +41,17 @@ public class WeatherMethodsImpl implements WeatherMethods {
 
 
     }
+
+
+    /**
+     * <p>
+     *  This methods is used to get the extended weather and will cache the result for a number of configured seconds
+     *  the configuration parameter name is weather.expire.time.in.seconds
+     * </p>
+     * @param zip zip code/postal code
+     * @param country this is the ios 3306 2 character representation (example: US (United States),MX (Mexico))
+     * @return extended weather, city, country, status, zip and error message
+     */
 
     @Cacheable(unless = "#result == null or #result.statusCode != 200 or #result.extended == null or #result.extended.size() == 0", value = WeatherConstants.CacheNames.WEATHER_FORECAST_CACHE, key = "'CACHE_ZIP_PREFIX_EXT_' + #zip.replace(' ','')  + #country")
     public Mono<ExtendedWeatherAndResponseStatusDTO> getExtendedWeather(String zip, String country) {

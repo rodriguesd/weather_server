@@ -70,7 +70,7 @@ public class OpenWeatherMethodsImpl implements ExternalWeatherMethods {
     @Value("${open.weather.base.url}")
     private String openWeatherBaseUrl;
 
-    @Value("${open.weather.expire.time.in.seconds}")
+    @Value("${weather.expire.time.in.seconds}")
     private long openWeatherCacheExpire;
 
 
@@ -114,6 +114,16 @@ public class OpenWeatherMethodsImpl implements ExternalWeatherMethods {
         return params;
     }
 
+
+    /**
+     * <p>
+     *  This methods is used to get the current weather.
+     * </p>
+     * @param zip zip code/postal code
+     * @param country this is the ios 3306 2 character representation (example: US (United States),MX (Mexico))
+     * @return current weather, city, country, status, zip and error message
+     */
+
     public Mono<CurrentWeatherAndResponseStatusDTO> getCurrentWeather(String zip, String country) {
 
         MultiValueMap<String, String> params = generateParams(zip, country);
@@ -142,6 +152,15 @@ public class OpenWeatherMethodsImpl implements ExternalWeatherMethods {
                 });
     }
 
+
+    /**
+     * <p>
+     *  This methods is used to get the extended weather 30 days out.
+     * </p>
+     * @param zip zip code/postal code
+     * @param country this is the ios 3306 2 character representation (example: US (United States),MX (Mexico))
+     * @return extended weather, city, country, status, zip and error message
+     */
 
     public Mono<ExtendedWeatherAndResponseStatusDTO> getExtendedWeather(String zip, String country) {
         MultiValueMap<String, String> params = generateParams(zip, country);
