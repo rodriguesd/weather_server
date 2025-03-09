@@ -1,8 +1,8 @@
 package com.stockheap.weather.functional;
 
-import com.stockheap.weather.controller.WeatherController;
+import com.stockheap.weather.controller.rest.WeatherController;
 
-import com.stockheap.weather.controller.response.CurrentWeatherResponse;
+import com.stockheap.weather.controller.rest.response.CurrentWeatherResponse;
 import com.stockheap.weather.helpers.ResourceFileReaderSingleton;
 import com.stockheap.weather.helpers.TestDataUtils;
 import com.stockheap.weather.service.common.ExternalWeatherMethods;

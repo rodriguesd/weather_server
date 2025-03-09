@@ -1,8 +1,8 @@
-package com.stockheap.weather.controller;
+package com.stockheap.weather.controller.rest;
 
 
-import com.stockheap.weather.controller.response.CurrentWeatherResponse;
-import com.stockheap.weather.controller.response.ExtendedWeatherResponse;
+import com.stockheap.weather.controller.rest.response.CurrentWeatherResponse;
+import com.stockheap.weather.controller.rest.response.ExtendedWeatherResponse;
 import com.stockheap.weather.service.weather.WeatherMethods;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

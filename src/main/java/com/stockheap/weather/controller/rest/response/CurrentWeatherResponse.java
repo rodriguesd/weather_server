@@ -1,4 +1,4 @@
-package com.stockheap.weather.controller.response;
+package com.stockheap.weather.controller.rest.response;
 
 import com.stockheap.weather.data.common.dto.WeatherDataDTO;
 import lombok.AllArgsConstructor;

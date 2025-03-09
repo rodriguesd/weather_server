@@ -22,7 +22,12 @@ import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactor
 import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.reactive.config.ResourceHandlerRegistry;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import reactor.netty.http.client.HttpClient;
 
 import java.time.Duration;
@@ -37,7 +42,7 @@ import springfox.documentation.spring.web.plugins.Docket;
 
 @Configuration
 @EnableCaching
-public class SpringConfiguration {
+public class SpringConfiguration implements WebMvcConfigurer {
 
 
 
@@ -79,6 +84,32 @@ public class SpringConfiguration {
     }
 
 
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+                .authorizeHttpRequests(auth -> auth
+                        .anyRequest().permitAll() // Allow all requests without authentication
+                )
+                .csrf(csrf -> csrf.disable()); // Disable CSRF for testing purposes
+
+        return http.build();
+    }
+
+
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        // Allow requests from localhost:3000 to all endpoints
+        registry.addMapping("/**")
+                .allowedOrigins("http://localhost:3000,http://localhost:8080,http://127.0.0.1:3000") // You can specify multiple origins if needed
+                .allowedMethods("GET", "POST", "PUT", "DELETE") // Allow specific HTTP methods
+                .allowedHeaders("*") // Allow all headers
+                .allowCredentials(true); // Allow credentials (cookies, authorization headers, etc.)
+    }
+
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/static/**")
+                .addResourceLocations("classpath:/static/");
+    }
 
     @Bean
     public CacheManager cacheManager(RedisConnectionFactory redisConnectionFactory) {
