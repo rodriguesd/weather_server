@@ -75,7 +75,7 @@ public class WeatherController {
 
 
     @Operation(summary = "Gets the extended weather by zip and country code", parameters = {
-            @Parameter(name = "countryCode", description = "supported countries (US (United States), CA (Canada), GB (United Kingdom), DE (Germany), MX (Mexico), PT (Portugal), ES (Spain)) use two character value in the API", required = true),
+            @Parameter(name = "countryCode", description = "supported countries (US (United States), DE (Germany), MX (Mexico),  ES (Spain)) use two character value in the API", required = true),
             @Parameter(name = "zip", description = "a valid zip code for the country code", required = true)
     })
     @ApiResponses(value = {
