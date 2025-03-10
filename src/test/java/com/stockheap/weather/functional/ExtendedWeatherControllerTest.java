@@ -7,7 +7,7 @@ import com.stockheap.weather.data.common.dto.WeatherDataDTO;
 import com.stockheap.weather.helpers.ResourceFileReaderSingleton;
 import com.stockheap.weather.helpers.TestDataUtils;
 import com.stockheap.weather.service.common.ExternalWeatherMethods;
-import com.stockheap.weather.service.weather.dto.ExtendedWeatherAndResponseStatusDTO;
+import com.stockheap.weather.service.common.dto.ExtendedWeatherAndResponseStatusDTO;
 import com.stockheap.weather.service.weather.WeatherMethods;
 import com.stockheap.weather.service.weather.WeatherMethodsImpl;
 import org.junit.jupiter.api.BeforeEach;

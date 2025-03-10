@@ -1,10 +1,21 @@
-package com.stockheap.weather.service.weather.dto;
+package com.stockheap.weather.service.common.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
+
+
+
+/**
+ * <p>
+ *     This dto is used to transfer data from an external weather
+ *     service to the caller. This class should be kept generic.
+ *
+ * </p>
+ */
+
 
 @Getter
 @Setter

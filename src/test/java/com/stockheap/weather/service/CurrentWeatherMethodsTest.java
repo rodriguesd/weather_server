@@ -5,7 +5,7 @@ import com.stockheap.weather.WeatherConstants;
 import com.stockheap.weather.helpers.ResourceFileReaderSingleton;
 import com.stockheap.weather.helpers.TestDataUtils;
 import com.stockheap.weather.service.common.ExternalWeatherMethods;
-import com.stockheap.weather.service.weather.dto.CurrentWeatherAndResponseStatusDTO;
+import com.stockheap.weather.service.common.dto.CurrentWeatherAndResponseStatusDTO;
 import com.stockheap.weather.service.external_weather.open_weather.OpenWeatherMethodsImpl;
 import com.stockheap.weather.service.weather.WeatherMethods;
 import com.stockheap.weather.service.weather.WeatherMethodsImpl;

@@ -2,8 +2,8 @@ package com.stockheap.weather.helpers;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.stockheap.weather.service.weather.dto.CurrentWeatherAndResponseStatusDTO;
-import com.stockheap.weather.service.weather.dto.ExtendedWeatherAndResponseStatusDTO;
+import com.stockheap.weather.service.common.dto.CurrentWeatherAndResponseStatusDTO;
+import com.stockheap.weather.service.common.dto.ExtendedWeatherAndResponseStatusDTO;
 import com.stockheap.weather.service.external_weather.open_weather.OpenWeatherMethodsImpl;
 import com.stockheap.weather.service.external_weather.open_weather.response_data.OpenExtendedWeatherResponse;
 import com.stockheap.weather.service.external_weather.open_weather.response_data.OpenWeatherResponse;

@@ -1,10 +1,19 @@
-package com.stockheap.weather.service.weather.dto;
+package com.stockheap.weather.service.common.dto;
 
 import com.stockheap.weather.data.common.dto.WeatherDataDTO;
 import lombok.Getter;
 import lombok.Setter;
 import java.util.ArrayList;
 import java.util.List;
+
+
+
+/**
+ * <p>
+ *     This dto is used to transfer extended weather data.
+ * </p>
+ */
+
 
 @Getter
 @Setter

@@ -2,8 +2,8 @@ package com.stockheap.weather.service.weather;
 
 import com.stockheap.weather.WeatherConstants;
 import com.stockheap.weather.service.common.ExternalWeatherMethods;
-import com.stockheap.weather.service.weather.dto.CurrentWeatherAndResponseStatusDTO;
-import com.stockheap.weather.service.weather.dto.ExtendedWeatherAndResponseStatusDTO;
+import com.stockheap.weather.service.common.dto.CurrentWeatherAndResponseStatusDTO;
+import com.stockheap.weather.service.common.dto.ExtendedWeatherAndResponseStatusDTO;
 import com.stockheap.weather.util.ZipUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
