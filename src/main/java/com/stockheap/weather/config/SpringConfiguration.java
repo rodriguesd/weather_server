@@ -18,6 +18,7 @@ import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
+import org.springframework.data.redis.connection.lettuce.LettuceClientConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.RedisSerializer;
@@ -38,6 +39,7 @@ import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 
+import static io.lettuce.core.ReadFrom.SLAVE_PREFERRED;
 
 
 @Configuration
@@ -130,7 +132,13 @@ public class SpringConfiguration implements WebMvcConfigurer {
         RedisStandaloneConfiguration configuration = new RedisStandaloneConfiguration();
         configuration.setHostName(redisHost);  // Ensure correct IP address is set here
         configuration.setPort(redisPort);
-        return new LettuceConnectionFactory(configuration);
+
+        LettuceClientConfiguration clientConfig = LettuceClientConfiguration.builder()
+                .readFrom(SLAVE_PREFERRED)
+                .build();
+
+
+        return new LettuceConnectionFactory(configuration, clientConfig);
     }
 
 
