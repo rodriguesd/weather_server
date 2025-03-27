@@ -1,10 +1,6 @@
 package com.stockheap.weather.config;
 
 
-
-
-
-
 import com.stockheap.weather.WeatherConstants;
 import io.netty.channel.ChannelOption;
 import io.netty.handler.timeout.ReadTimeoutHandler;
@@ -16,6 +12,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
+import org.springframework.data.redis.connection.RedisClusterConfiguration;
+import org.springframework.data.redis.connection.RedisConfiguration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceClientConfiguration;
@@ -32,8 +30,10 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import reactor.netty.http.client.HttpClient;
 
 import java.time.Duration;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.spi.DocumentationType;
@@ -47,8 +47,6 @@ import static io.lettuce.core.ReadFrom.SLAVE_PREFERRED;
 public class SpringConfiguration implements WebMvcConfigurer {
 
 
-
-
     @Value("${spring.redis.host}")
     private String redisHost;
 
@@ -60,12 +58,11 @@ public class SpringConfiguration implements WebMvcConfigurer {
 
 
     @Value("${open.weather.base.url}")
-    private String  openWeatherBaseUrl;
-
+    private String openWeatherBaseUrl;
 
 
     @Value("${web.client.connection.seconds.timeout}")
-    private int  webClientConnectionSecondsTimeout;
+    private int webClientConnectionSecondsTimeout;
 
     @Value("${web.client.read.seconds.timeout}")
     private int webClientReadSecondsTimeout;
@@ -73,7 +70,6 @@ public class SpringConfiguration implements WebMvcConfigurer {
 
     @Value("${web.client.write.seconds.timeout}")
     private int webClientWriteSecondsTimeout;
-
 
 
     @Bean
@@ -129,16 +125,34 @@ public class SpringConfiguration implements WebMvcConfigurer {
 
     @Bean
     public RedisConnectionFactory redisConnectionFactory() {
-        RedisStandaloneConfiguration configuration = new RedisStandaloneConfiguration();
-        configuration.setHostName(redisHost);  // Ensure correct IP address is set here
-        configuration.setPort(redisPort);
+        RedisConfiguration configuration = standAlone();
 
         LettuceClientConfiguration clientConfig = LettuceClientConfiguration.builder()
                 .readFrom(SLAVE_PREFERRED)
                 .build();
 
+        LettuceConnectionFactory lettuceConnectionFactory = new LettuceConnectionFactory(configuration, clientConfig);
+        lettuceConnectionFactory.afterPropertiesSet();
+        return lettuceConnectionFactory;
 
-        return new LettuceConnectionFactory(configuration, clientConfig);
+
+    }
+
+    public RedisConfiguration standAlone()
+    {
+        RedisStandaloneConfiguration configuration = new RedisStandaloneConfiguration();
+        configuration.setHostName(redisHost);  // Ensure correct IP address is set here
+        configuration.setPort(redisPort);
+        return configuration;
+    }
+
+    public RedisConfiguration clusterConfig()
+    {
+
+        RedisClusterConfiguration clusterConfig = new RedisClusterConfiguration(
+                Arrays.asList(redisHost + ":"  + redisPort)
+        );
+        return clusterConfig;
     }
 
 
@@ -155,7 +169,6 @@ public class SpringConfiguration implements WebMvcConfigurer {
                 .baseUrl(openWeatherBaseUrl)
                 .build();
     }
-
 
 
 }
